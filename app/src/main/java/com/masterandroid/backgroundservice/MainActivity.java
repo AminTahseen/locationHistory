@@ -9,6 +9,7 @@ import android.Manifest;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -24,6 +25,8 @@ public class MainActivity extends AppCompatActivity {
 
     Button start;
     Button stop;
+    TextView Details;
+    Button show;
     final int REQUEST_CODE_LOCATION_PERMISSION=1;
 
     @Override
@@ -33,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
 
         start= findViewById(R.id.startService);
         stop= findViewById(R.id.stopService);
+        Details= findViewById(R.id.details);
+        show= findViewById(R.id.show);
 
         start.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 stopLocation();
+
                 //for distance between two latlngs
 //                double earthRadius = 6371; //kilometers
 //                double dLat = Math.toRadians(24.343432-24.769594);
@@ -68,6 +74,17 @@ public class MainActivity extends AppCompatActivity {
 //                stop.setText(String.valueOf(dist));
             }
         });
+
+        show.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences sharedPreferences= getSharedPreferences("Details",Context.MODE_PRIVATE);
+                String value= sharedPreferences.getString("AddressList","abc");
+                Details.setText(value);
+            }
+        });
+
+
     }
 
     @Override

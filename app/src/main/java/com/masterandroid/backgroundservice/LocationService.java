@@ -7,7 +7,10 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Build;
 import android.os.CountDownTimer;
 import android.os.IBinder;
@@ -22,8 +25,17 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.gson.Gson;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 public class LocationService extends Service {
+
+    String details;
+    List<String> visitAddress;
 
     static CountDownTimer countDownTimer = null;
     private LocationCallback locationCallback = new LocationCallback() {
@@ -34,6 +46,8 @@ public class LocationService extends Service {
                 double longitude = locationResult.getLastLocation().getLongitude();
                 double latitude = locationResult.getLastLocation().getLatitude();
                 Log.d ("LOCATION_UPDATE",latitude+","+longitude);
+                details= getAddress(longitude,latitude);
+                visitAddress.add(details);
             }
         }
     };
@@ -53,7 +67,7 @@ public class LocationService extends Service {
         // 60*1*1000 = 1 min
         // 50000 = 50 seconds
         // 10000 = 10 seconds;
-        countDownTimer = new CountDownTimer(10000, 1000) {
+        countDownTimer = new CountDownTimer(20000, 1000) {
             public void onTick(long millisUntilFinished)
             {
                 String channelId = "location notification channel";
@@ -112,9 +126,21 @@ public class LocationService extends Service {
             {
                 Log.d("done!", "done!");
                 stopLocation();
+                Gson gson= new Gson();
+                String jsonText= gson.toJson(visitAddress);
+                SharedPreferences sharedPreferences= getSharedPreferences("Details", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor= sharedPreferences.edit();
+                editor.putString("AddressList",jsonText);
+                editor.apply();
+
+
             }
         };
         countDownTimer.start();
+        visitAddress= new ArrayList<>();
+
+
+
 
 
     }
@@ -126,6 +152,29 @@ public class LocationService extends Service {
         stopSelf();
         countDownTimer.cancel();
 
+    }
+
+    private String getAddress(double Longitude, double Latitude){
+        Geocoder geocoder;
+        String completeDetails="";
+        List<Address> addresses= new ArrayList<>();
+        geocoder=new Geocoder(this, Locale.getDefault());
+
+        try {
+            addresses= geocoder.getFromLocation(Latitude,Longitude,1);
+            String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+            String city = addresses.get(0).getLocality();
+            String state = addresses.get(0).getAdminArea();
+            String country = addresses.get(0).getCountryName();
+            String postalCode = addresses.get(0).getPostalCode();
+            String knownName = addresses.get(0).getFeatureName();
+
+            completeDetails= address;
+            Log.d("LOCATION_DETAILS",Latitude+", "+Longitude+", "+knownName+", "+address);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return completeDetails;
     }
 
     @Override
