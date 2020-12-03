@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
@@ -26,7 +27,7 @@ public class MyLocationService extends Service {
     public LocationManager locationManager;
     public MyLocationListener listener;
     public Location previousBestLocation = null;
-
+    String TAG="Location Service";
     Intent intent;
     int counter = 0;
 
@@ -35,7 +36,6 @@ public class MyLocationService extends Service {
         super.onCreate();
         intent = new Intent(BROADCAST_ACTION);
     }
-
     @Override
     public void onStart(Intent intent, int startId) {
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -57,7 +57,6 @@ public class MyLocationService extends Service {
             // A new location is always better than no location
             return true;
         }
-
         // Check whether the new location fix is newer or older
         long timeDelta = location.getTime() - currentBestLocation.getTime();
         boolean isSignificantlyNewer = timeDelta > TWO_MINUTES;
@@ -72,7 +71,6 @@ public class MyLocationService extends Service {
         } else if (isSignificantlyOlder) {
             return false;
         }
-
         // Check whether the new location fix is more or less accurate
         int accuracyDelta = (int) (location.getAccuracy() - currentBestLocation.getAccuracy());
         boolean isLessAccurate = accuracyDelta > 0;
@@ -93,8 +91,6 @@ public class MyLocationService extends Service {
         }
         return false;
     }
-
-
     /**
      * Checks whether two providers are the same
      */
@@ -104,13 +100,11 @@ public class MyLocationService extends Service {
         }
         return provider1.equals(provider2);
     }
-
-
     @Override
     public void onDestroy() {
-        // handler.removeCallbacks(sendUpdatesToUI);
+       // handler.removeCallbacks(sendUpdatesToUI);
         super.onDestroy();
-        Log.v("STOP_SERVICE", "DONE");
+        Log.d("STOP_SERVICE", "DONE");
         locationManager.removeUpdates(listener);
     }
 
@@ -139,8 +133,12 @@ public class MyLocationService extends Service {
                 intent.putExtra("Latitude", loc.getLatitude());
                 intent.putExtra("Longitude", loc.getLongitude());
                 intent.putExtra("Provider", loc.getProvider());
-                sendNotification("Location Changed",loc.toString());
+
+                //
+
+               // sendNotification("Location Changed",loc.toString());
                 sendBroadcast(intent);
+                Log.d(TAG,loc.getLatitude()+" "+loc.getLongitude());
 
             }
         }
@@ -151,7 +149,7 @@ public class MyLocationService extends Service {
         }
 
         public void onProviderDisabled(String provider) {
-            Toast.makeText(getApplicationContext(), "Gps Disabled", Toast.LENGTH_SHORT).show();
+          //  Toast.makeText(getApplicationContext(), "Gps Disabled", Toast.LENGTH_SHORT).show();
         }
 
 
@@ -171,5 +169,6 @@ public class MyLocationService extends Service {
         // notificationId is a unique int for each notification that you must define
         notificationManager.notify(1, builder.build());
     }
+
 
 }
