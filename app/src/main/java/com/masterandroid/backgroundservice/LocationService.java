@@ -36,7 +36,6 @@ public class LocationService extends Service {
 
     String details;
     List<String> visitAddress;
-
     static CountDownTimer countDownTimer = null;
     private LocationCallback locationCallback = new LocationCallback() {
         @Override
@@ -61,48 +60,30 @@ public class LocationService extends Service {
 
     private void startLocation()
     {
+
         if (countDownTimer != null) {
             countDownTimer.cancel();
         }
         // 60*1*1000 = 1 min
         // 50000 = 50 seconds
         // 10000 = 10 seconds;
+
+        // Try Increasing countDownInterval
         countDownTimer = new CountDownTimer(20000, 1000) {
             public void onTick(long millisUntilFinished)
             {
-                String channelId = "location notification channel";
-                NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                Intent resultIntent = new Intent();
-                PendingIntent pendingIntent = PendingIntent.getActivity(
-                        getApplicationContext(), 0,
-                        resultIntent,
-                        PendingIntent.FLAG_UPDATE_CURRENT);
-                NotificationCompat.Builder builder = new NotificationCompat.Builder(
-                        getApplicationContext(),
-                        channelId
-                );
+                String left=Long.toString(millisUntilFinished);
+                Log.d("Service Time Interval ",left);
 
-                builder.setSmallIcon(R.mipmap.ic_launcher);
-                builder.setContentTitle("Location Service");
-                builder.setDefaults(NotificationCompat.DEFAULT_ALL);
-                builder.setContentText("running");
-                builder.setContentIntent(pendingIntent);
-                builder.setAutoCancel(false);
-                builder.setPriority(NotificationCompat.PRIORITY_MAX);
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    if (notificationManager != null && notificationManager.getNotificationChannel(channelId) == null) {
-                        NotificationChannel notificationChannel = new NotificationChannel(
-                                channelId, "Location Service",
-                                NotificationManager.IMPORTANCE_HIGH
-                        );
-                        notificationChannel.setDescription("This channel is used by location service");
-                        notificationManager.createNotificationChannel(notificationChannel);
-                    }
-                }
                 LocationRequest locationRequest = new LocationRequest();
+
+                // Try adjusting the location.setFastestInterval
+                /*
+                50*100 = 5,000 = 5 Seconds
+                100*100 = 10,000 = 10 Seconds
+                 */
                 locationRequest.setInterval(5000);
-                locationRequest.setFastestInterval(60*100);
+                locationRequest.setFastestInterval(100*100);
                 locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
                 if (ActivityCompat.checkSelfPermission(LocationService.this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -119,8 +100,6 @@ public class LocationService extends Service {
                 }
                 LocationServices.getFusedLocationProviderClient(LocationService.this)
                         .requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
-                startForeground(Constants.LOCATION_SERVICE_ID,builder.build());
-
             }
             public void onFinish()
             {
@@ -132,18 +111,14 @@ public class LocationService extends Service {
                 SharedPreferences.Editor editor= sharedPreferences.edit();
                 editor.putString("AddressList",jsonText);
                 editor.apply();
-
-
             }
         };
+
         countDownTimer.start();
         visitAddress= new ArrayList<>();
 
-
-
-
-
     }
+
 
     private void stopLocation(){
         LocationServices.getFusedLocationProviderClient(this)
@@ -170,6 +145,7 @@ public class LocationService extends Service {
             String knownName = addresses.get(0).getFeatureName();
 
             completeDetails= address;
+            Log.d("LOCATION Push","Push In DB");
             Log.d("LOCATION_DETAILS",Latitude+", "+Longitude+", "+knownName+", "+address);
         } catch (IOException e) {
             e.printStackTrace();
@@ -189,6 +165,7 @@ public class LocationService extends Service {
                     stopLocation();
                 }
             }
+
         }
         return super.onStartCommand(intent, flags, startId);
     }

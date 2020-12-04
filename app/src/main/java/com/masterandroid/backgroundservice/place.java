@@ -1,65 +1,48 @@
 package com.masterandroid.backgroundservice;
 
 public class place {
-    private String key;
-    private String place_name;
-    private double place_lat;
-    private double place_lon;
 
-    public place(String key, String place_name, double place_lat, double place_lon) {
-        this.key = key;
-        this.place_name = place_name;
-        this.place_lat = place_lat;
-        this.place_lon = place_lon;
+    private double placeLatitude;
+    private double placeLongitude;
+    private String placeAddress;
+    private String city;
+
+    public place(double placeLatitude, double placeLongitude, String placeAddress, String city) {
+        this.placeLatitude = placeLatitude;
+        this.placeLongitude = placeLongitude;
+        this.placeAddress = placeAddress;
+        this.city = city;
     }
 
-    public place() { }
-
-    public place(String place_name, double place_lat, double place_lon) {
-        this.place_name = place_name;
-        this.place_lat = place_lat;
-        this.place_lon = place_lon;
+    public double getPlaceLatitude() {
+        return placeLatitude;
     }
 
-    public String getKey() {
-        return key;
+    public void setPlaceLatitude(double placeLatitude) {
+        this.placeLatitude = placeLatitude;
     }
 
-    public void setKey(String key) {
-        this.key = key;
+    public double getPlaceLongitude() {
+        return placeLongitude;
     }
 
-    public String getPlace_name() {
-        return place_name;
+    public void setPlaceLongitude(double placeLongitude) {
+        this.placeLongitude = placeLongitude;
     }
 
-    public void setPlace_name(String place_name) {
-        this.place_name = place_name;
+    public String getPlaceAddress() {
+        return placeAddress;
     }
 
-    public double getPlace_lat() {
-        return place_lat;
+    public void setPlaceAddress(String placeAddress) {
+        this.placeAddress = placeAddress;
     }
 
-    public void setPlace_lat(double place_lat) {
-        this.place_lat = place_lat;
+    public String getCity() {
+        return city;
     }
 
-    public double getPlace_lon() {
-        return place_lon;
-    }
-
-    public void setPlace_lon(double place_lon) {
-        this.place_lon = place_lon;
-    }
-
-    @Override
-    public String toString() {
-        return "place{" +
-                "key='" + key + '\'' +
-                ", place_name='" + place_name + '\'' +
-                ", place_lat=" + place_lat +
-                ", place_lon=" + place_lon +
-                '}'+"\n";
+    public void setCity(String city) {
+        this.city = city;
     }
 }

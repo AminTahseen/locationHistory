@@ -3,14 +3,20 @@ package com.masterandroid.backgroundservice;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.app.ActivityManager;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
@@ -134,5 +140,41 @@ public class MainActivity extends AppCompatActivity {
             startService(intent);
             Toast.makeText(this,"Stoped",Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void Notification(){
+        String channelId = "location notification channel";
+        NotificationCompat.Builder builder;
+
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        Intent resultIntent = new Intent();
+        PendingIntent pendingIntent = PendingIntent.getActivity(
+                getApplicationContext(), 0,
+                resultIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+        builder = new NotificationCompat.Builder(
+                getApplicationContext(),
+                channelId
+        );
+
+        builder.setSmallIcon(R.mipmap.ic_launcher);
+        builder.setContentTitle("Location Service");
+        builder.setDefaults(NotificationCompat.PRIORITY_DEFAULT);
+        builder.setContentText("running");
+        builder.setContentIntent(pendingIntent);
+        builder.setAutoCancel(true);
+        builder.setPriority(NotificationCompat.PRIORITY_MAX);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (notificationManager != null && notificationManager.getNotificationChannel(channelId) == null) {
+                NotificationChannel notificationChannel = new NotificationChannel(
+                        channelId, "Location Service",
+                        NotificationManager.IMPORTANCE_DEFAULT
+                );
+                notificationChannel.setDescription("This channel is used by location service");
+                notificationManager.createNotificationChannel(notificationChannel);
+            }
+        }
+
     }
 }
