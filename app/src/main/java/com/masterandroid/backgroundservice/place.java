@@ -1,15 +1,29 @@
 package com.masterandroid.backgroundservice;
 
+import com.google.gson.annotations.SerializedName;
+
 public class place {
 
-    private double placeLatitude;
+    @SerializedName("placeId")
+    private int placeId;
+
+    @SerializedName("placeLongitude")
     private double placeLongitude;
+
+    @SerializedName("placeLatitude")
+    private double placeLatitude;
+
+    @SerializedName("placeAddress")
     private String placeAddress;
+
+    @SerializedName("city")
     private String city;
 
-    public place(double placeLatitude, double placeLongitude, String placeAddress, String city) {
-        this.placeLatitude = placeLatitude;
+    public place() { }
+
+    public place(double placeLongitude, double placeLatitude, String placeAddress, String city) {
         this.placeLongitude = placeLongitude;
+        this.placeLatitude = placeLatitude;
         this.placeAddress = placeAddress;
         this.city = city;
     }
@@ -44,5 +58,13 @@ public class place {
 
     public void setCity(String city) {
         this.city = city;
+    }
+
+    public int getPlaceId() {
+        return placeId;
+    }
+
+    public void setPlaceId(int placeId) {
+        this.placeId = placeId;
     }
 }

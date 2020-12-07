@@ -1,9 +1,6 @@
 package com.masterandroid.backgroundservice;
 
 import android.Manifest;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -11,7 +8,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
-import android.os.Build;
 import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.os.Looper;
@@ -19,20 +15,28 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
-import androidx.core.app.NotificationCompat;
 
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.masterandroid.backgroundservice.retrofit.ApiClient;
+import com.masterandroid.backgroundservice.retrofit.ApiInterface;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import okhttp3.MultipartBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class LocationService extends Service {
+    ApiInterface retrofit_API;
 
     String details;
     List<String> visitAddress;
@@ -47,6 +51,7 @@ public class LocationService extends Service {
                 Log.d ("LOCATION_UPDATE",latitude+","+longitude);
                 details= getAddress(longitude,latitude);
                 visitAddress.add(details);
+
             }
         }
     };
@@ -147,6 +152,29 @@ public class LocationService extends Service {
             completeDetails= address;
             Log.d("LOCATION Push","Push In DB");
             Log.d("LOCATION_DETAILS",Latitude+", "+Longitude+", "+knownName+", "+address);
+
+            Log.d("CheckForCity",city);
+            place visit=new place(Longitude,Latitude,address,city);
+            MultipartBody requestBody = new MultipartBody.Builder()
+                    .setType(MultipartBody.FORM)
+                    .addFormDataPart("placeLongitude", String.valueOf(Longitude))
+                    .addFormDataPart("placeLatitude", String.valueOf(Latitude))
+                    .addFormDataPart("placeAddress", address)
+                    .addFormDataPart("city", city)
+                    .build();
+            Call<JsonObject> placePostCall=retrofit_API.postLocation("createHistory",requestBody);
+            placePostCall.enqueue(new Callback<JsonObject>()
+            {
+                @Override
+                public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                    Log.d("Retrofit Response", "onResponse: " + response.body());
+                }
+                @Override
+                public void onFailure(Call<JsonObject> call, Throwable t) {
+                    Log.e("Retrofit Error Response", "onFailure: " +t.getMessage());
+                }
+            });
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -164,6 +192,7 @@ public class LocationService extends Service {
                 else if(action.equals(Constants.ACTION_STOP_LOCATION_SERVICE)){
                     stopLocation();
                 }
+                retrofit_API= ApiClient.getClient().create(ApiInterface.class);
             }
 
         }

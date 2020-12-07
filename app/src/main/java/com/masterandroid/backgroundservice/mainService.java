@@ -33,7 +33,7 @@ public class mainService extends Service {
                     for (DataSnapshot child:dataSnapshot.getChildren())
                     {
                         place obj=child.getValue(place.class);
-                        obj.setKey(child.getKey());
+                        //obj.setKey(child.getKey());
                         Log.d(TAG, "Value from service is: " + obj.toString());
 
                     }

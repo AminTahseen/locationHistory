@@ -16,6 +16,9 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
+import com.masterandroid.backgroundservice.retrofit.ApiClient;
+import com.masterandroid.backgroundservice.retrofit.ApiInterface;
+
 
 /**
  * Created by roberto on 9/29/16.
@@ -30,6 +33,8 @@ public class MyLocationService extends Service {
     String TAG="Location Service";
     Intent intent;
     int counter = 0;
+
+
 
     @Override
     public void onCreate() {
