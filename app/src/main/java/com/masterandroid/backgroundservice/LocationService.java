@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
+import android.os.AsyncTask;
 import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.os.Looper;
@@ -26,10 +27,14 @@ import com.google.gson.JsonObject;
 import com.masterandroid.backgroundservice.retrofit.ApiClient;
 import com.masterandroid.backgroundservice.retrofit.ApiInterface;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -40,7 +45,8 @@ import retrofit2.Response;
 
 public class LocationService extends Service {
     ApiInterface retrofit_API;
-
+    private static final int CODE_GET_REQUEST = 1024;
+    private static final int CODE_POST_REQUEST = 1025;
     place details;
     List<String> visitAddress;
     static CountDownTimer countDownTimer = null;
@@ -58,9 +64,15 @@ public class LocationService extends Service {
                 Log.d("DETAILS Address ",details.getPlaceAddress());
                 Log.d("DETAILS City ",details.getCity());
 
+                HashMap<String, String> params = new HashMap<>();
+                params.put("placeLatitude",String.valueOf(details.getPlaceLatitude()));
+                params.put("placeLongitude",String.valueOf(details.getPlaceLongitude()));
+                params.put("placeAddress",details.getPlaceAddress());
+                params.put("city",details.getCity());
+
+                PerformNetworkRequest request = new PerformNetworkRequest(Api.URL_CREATE_LIST, params, CODE_POST_REQUEST);
+                request.execute();
                 // visitAddress.add(details);
-
-
             }
         }
     };
@@ -75,9 +87,9 @@ public class LocationService extends Service {
     private void startLocation()
     {
 
-        if (countDownTimer != null) {
-            countDownTimer.cancel();
-        }
+//        if (countDownTimer != null) {
+//            countDownTimer.cancel();
+//        }
         // 60*1*1000 = 1 min
         // 50000 = 50 seconds
         // 10000 = 10 seconds;
@@ -124,14 +136,6 @@ public class LocationService extends Service {
         }
         LocationServices.getFusedLocationProviderClient(LocationService.this)
                 .requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
-       /*
-        Gson gson= new Gson();
-        String jsonText= gson.toJson(visitAddress);
-        SharedPreferences sharedPreferences= getSharedPreferences("Details", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor= sharedPreferences.edit();
-        editor.putString("AddressList",jsonText);
-        editor.apply();
-        */
      //   countDownTimer.start();
       //  visitAddress= new ArrayList<>();
 
@@ -167,30 +171,6 @@ public class LocationService extends Service {
             Log.d("LOCATION Push","Push In DB");
             Log.d("LOCATION_DETAILS",Latitude+", "+Longitude+", "+knownName+", "+address);
 
-//            Log.d("CheckForCity",city);
-//            place visit=new place(Longitude,Latitude,address,city);
-//            retrofit_API= ApiClient.getClient().create(ApiInterface.class);
-//
-//            Call<Response> call=retrofit_API.insertUser(Double.toString(Longitude), Double.toString(Latitude), address, city);
-//            call.enqueue(new Callback<Response>() {
-//                @Override
-//                public void onResponse(Call<Response> call, Response<Response> response) {
-//                    if (!response.isSuccessful())
-//                    {
-//                        Log.d("LocationService", "No Success");
-//                    }
-//                    else
-//                        {
-//                            Log.d("LocationService", "Success");
-//                        }
-//                }
-//
-//                @Override
-//                public void onFailure(Call<Response> call, Throwable t) {
-//                    Log.d("onFailure", t.getMessage());
-//                }
-//            });
-
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -209,8 +189,67 @@ public class LocationService extends Service {
                     stopLocation();
                 }
             }
-
         }
         return super.onStartCommand(intent, flags, startId);
+    }
+
+    private class PerformNetworkRequest extends AsyncTask<Void, Void, String> {
+
+        //the url where we need to send the request
+        String url;
+
+        //the parameters
+        HashMap<String, String> params;
+
+        //the request code to define whether it is a GET or POST
+        int requestCode;
+
+        //constructor to initialize values
+        PerformNetworkRequest(String url, HashMap<String, String> params, int requestCode) {
+            this.url = url;
+            this.params = params;
+            this.requestCode = requestCode;
+        }
+
+        //when the task started displaying a progressbar
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+
+        //this method will give the response from the request
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            try {
+                JSONObject object = new JSONObject(s);
+                if (!object.getBoolean("error")) {
+                    Toast.makeText(getApplicationContext(), object.getString("message"), Toast.LENGTH_SHORT).show();
+                    //refreshing the herolist after every operation
+                    //so we get an updated list
+                    //we will create this method right now it is commented
+                    //because we haven't created it yet
+                    //refreshList(object.getJSONArray("myLists"));
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        //the network operation will be performed in background
+        @Override
+        protected String doInBackground(Void... voids) {
+            RequestHandler requestHandler = new RequestHandler();
+
+            if (requestCode == CODE_POST_REQUEST)
+                return requestHandler.sendPostRequest(url, params);
+
+
+            if (requestCode == CODE_GET_REQUEST)
+                return requestHandler.sendGetRequest(url);
+
+            return null;
+        }
     }
 }
