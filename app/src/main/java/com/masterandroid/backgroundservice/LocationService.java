@@ -39,6 +39,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class LocationService extends Service {
+    ApiInterface retrofit_API;
+
     String details;
     List<String> visitAddress;
     static CountDownTimer countDownTimer = null;
@@ -143,8 +145,7 @@ public class LocationService extends Service {
 
         try {
             addresses= geocoder.getFromLocation(Latitude,Longitude,1);
-            String address = addresses.get(0).getAddressLine(0);
-            // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+            String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
             String city = addresses.get(0).getLocality();
             String state = addresses.get(0).getAdminArea();
             String country = addresses.get(0).getCountryName();
@@ -155,9 +156,29 @@ public class LocationService extends Service {
             Log.d("LOCATION Push","Push In DB");
             Log.d("LOCATION_DETAILS",Latitude+", "+Longitude+", "+knownName+", "+address);
 
-            Log.d("CheckForCity",city);
-            place visit=new place(Longitude,Latitude,address,city);
-
+//            Log.d("CheckForCity",city);
+//            place visit=new place(Longitude,Latitude,address,city);
+//            retrofit_API= ApiClient.getClient().create(ApiInterface.class);
+//
+//            Call<Response> call=retrofit_API.insertUser(Double.toString(Longitude), Double.toString(Latitude), address, city);
+//            call.enqueue(new Callback<Response>() {
+//                @Override
+//                public void onResponse(Call<Response> call, Response<Response> response) {
+//                    if (!response.isSuccessful())
+//                    {
+//                        Log.d("LocationService", "No Success");
+//                    }
+//                    else
+//                        {
+//                            Log.d("LocationService", "Success");
+//                        }
+//                }
+//
+//                @Override
+//                public void onFailure(Call<Response> call, Throwable t) {
+//                    Log.d("onFailure", t.getMessage());
+//                }
+//            });
 
         } catch (IOException e) {
             e.printStackTrace();
