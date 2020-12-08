@@ -41,7 +41,7 @@ import retrofit2.Response;
 public class LocationService extends Service {
     ApiInterface retrofit_API;
 
-    String details;
+    place details;
     List<String> visitAddress;
     static CountDownTimer countDownTimer = null;
     private LocationCallback locationCallback = new LocationCallback() {
@@ -53,7 +53,13 @@ public class LocationService extends Service {
                 double latitude = locationResult.getLastLocation().getLatitude();
                 Log.d ("LOCATION_UPDATE",latitude+","+longitude);
                 details= getAddress(longitude,latitude);
-                visitAddress.add(details);
+                Log.d("DETAILS Lat ",Double.toString(details.getPlaceLatitude()));
+                Log.d("DETAILS Lon ",Double.toString(details.getPlaceLongitude()));
+                Log.d("DETAILS Address ",details.getPlaceAddress());
+                Log.d("DETAILS City ",details.getCity());
+
+                // visitAddress.add(details);
+
 
             }
         }
@@ -76,54 +82,59 @@ public class LocationService extends Service {
         // 50000 = 50 seconds
         // 10000 = 10 seconds;
 
-        // Try Increasing countDownInterval
+        /* Try Increasing countDownInterval
         countDownTimer = new CountDownTimer(20000, 1000) {
             public void onTick(long millisUntilFinished)
             {
                 String left=Long.toString(millisUntilFinished);
                 Log.d("Service Time Interval ",left);
 
-                LocationRequest locationRequest = new LocationRequest();
 
-                // Try adjusting the location.setFastestInterval
-                /*
-                50*100 = 5,000 = 5 Seconds
-                100*100 = 10,000 = 10 Seconds
-                 */
-                locationRequest.setInterval(5000);
-                locationRequest.setFastestInterval(100*100);
-                locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-
-                if (ActivityCompat.checkSelfPermission(LocationService.this, Manifest.permission.ACCESS_FINE_LOCATION)
-                        != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(LocationService.this,
-                        Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    // TODO: Consider calling
-                    //    ActivityCompat#requestPermissions
-                    // here to request the missing permissions, and then overriding
-                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                    //                                          int[] grantResults)
-                    // to handle the case where the user grants the permission. See the documentation
-                    // for ActivityCompat#requestPermissions for more details.
-                    return;
-                }
-                LocationServices.getFusedLocationProviderClient(LocationService.this)
-                        .requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
             }
             public void onFinish()
             {
                 Log.d("done!", "done!");
                 stopLocation();
-                Gson gson= new Gson();
-                String jsonText= gson.toJson(visitAddress);
-                SharedPreferences sharedPreferences= getSharedPreferences("Details", Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor= sharedPreferences.edit();
-                editor.putString("AddressList",jsonText);
-                editor.apply();
+
             }
         };
+*/
+        LocationRequest locationRequest = new LocationRequest();
 
-        countDownTimer.start();
-        visitAddress= new ArrayList<>();
+        // Try adjusting the location.setFastestInterval
+                /*
+                50*100 = 5,000 = 5 Seconds
+                100*100 = 10,000 = 10 Seconds
+                 */
+        locationRequest.setInterval(5000);
+        locationRequest.setFastestInterval(100*100);
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
+        if (ActivityCompat.checkSelfPermission(LocationService.this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(LocationService.this,
+                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        LocationServices.getFusedLocationProviderClient(LocationService.this)
+                .requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
+       /*
+        Gson gson= new Gson();
+        String jsonText= gson.toJson(visitAddress);
+        SharedPreferences sharedPreferences= getSharedPreferences("Details", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor= sharedPreferences.edit();
+        editor.putString("AddressList",jsonText);
+        editor.apply();
+        */
+     //   countDownTimer.start();
+      //  visitAddress= new ArrayList<>();
+
 
     }
 
@@ -133,13 +144,13 @@ public class LocationService extends Service {
                 .removeLocationUpdates(locationCallback);
         stopForeground(true);
         stopSelf();
-        countDownTimer.cancel();
+     //   countDownTimer.cancel();
 
     }
 
-    private String getAddress(double Longitude, double Latitude){
+    private place getAddress(double Longitude, double Latitude){
         Geocoder geocoder;
-        String completeDetails="";
+        place completeDetails=null;
         List<Address> addresses= new ArrayList<>();
         geocoder=new Geocoder(this, Locale.getDefault());
 
@@ -152,7 +163,7 @@ public class LocationService extends Service {
             String postalCode = addresses.get(0).getPostalCode();
             String knownName = addresses.get(0).getFeatureName();
 
-            completeDetails= address;
+            completeDetails= new place(Latitude,Longitude,address,city);
             Log.d("LOCATION Push","Push In DB");
             Log.d("LOCATION_DETAILS",Latitude+", "+Longitude+", "+knownName+", "+address);
 
