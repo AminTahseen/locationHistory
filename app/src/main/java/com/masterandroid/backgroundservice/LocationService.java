@@ -12,6 +12,7 @@ import android.os.CountDownTimer;
 import android.os.IBinder;
 import android.os.Looper;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
@@ -25,7 +26,9 @@ import com.google.gson.JsonObject;
 import com.masterandroid.backgroundservice.retrofit.ApiClient;
 import com.masterandroid.backgroundservice.retrofit.ApiInterface;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -155,23 +158,25 @@ public class LocationService extends Service {
 
             Log.d("CheckForCity",city);
             place visit=new place(Longitude,Latitude,address,city);
-            MultipartBody requestBody = new MultipartBody.Builder()
-                    .setType(MultipartBody.FORM)
-                    .addFormDataPart("placeLongitude", String.valueOf(Longitude))
-                    .addFormDataPart("placeLatitude", String.valueOf(Latitude))
-                    .addFormDataPart("placeAddress", address)
-                    .addFormDataPart("city", city)
-                    .build();
-            Call<JsonObject> placePostCall=retrofit_API.postLocation("createHistory",requestBody);
-            placePostCall.enqueue(new Callback<JsonObject>()
-            {
+            retrofit_API= ApiClient.getClient().create(ApiInterface.class);
+
+            Call<Response> call=retrofit_API.insertUser(Double.toString(Longitude), Double.toString(Latitude), address, city);
+            call.enqueue(new Callback<Response>() {
                 @Override
-                public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                    Log.d("Retrofit Response", "onResponse: " + response.body());
+                public void onResponse(Call<Response> call, Response<Response> response) {
+                    if (!response.isSuccessful())
+                    {
+                        Log.d("LocationService", "No Success");
+                    }
+                    else
+                        {
+                            Log.d("LocationService", "Success");
+                        }
                 }
+
                 @Override
-                public void onFailure(Call<JsonObject> call, Throwable t) {
-                    Log.e("Retrofit Error Response", "onFailure: " +t.getMessage());
+                public void onFailure(Call<Response> call, Throwable t) {
+                    Log.d("onFailure", t.getMessage());
                 }
             });
 
@@ -192,7 +197,6 @@ public class LocationService extends Service {
                 else if(action.equals(Constants.ACTION_STOP_LOCATION_SERVICE)){
                     stopLocation();
                 }
-                retrofit_API= ApiClient.getClient().create(ApiInterface.class);
             }
 
         }
