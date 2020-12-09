@@ -22,11 +22,11 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
+
 import com.masterandroid.backgroundservice.retrofit.ApiClient;
 import com.masterandroid.backgroundservice.retrofit.ApiInterface;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.jar.JarEntry;
 
 import okhttp3.MultipartBody;
 import retrofit2.Call;
@@ -48,35 +49,32 @@ public class LocationService extends Service {
     private static final int CODE_GET_REQUEST = 1024;
     private static final int CODE_POST_REQUEST = 1025;
     place details;
-    List<String> visitAddress;
+    List<place> visitAddress;
     static CountDownTimer countDownTimer = null;
+
     private LocationCallback locationCallback = new LocationCallback() {
         @Override
         public void onLocationResult(LocationResult locationResult) {
             super.onLocationResult(locationResult);
             if (locationResult != null && locationResult.getLastLocation() != null) {
-                double longitude = locationResult.getLastLocation().getLongitude();
+                double longitude =  locationResult.getLastLocation().getLongitude();
                 double latitude = locationResult.getLastLocation().getLatitude();
                 Log.d ("LOCATION_UPDATE",latitude+","+longitude);
-                details= getAddress(longitude,latitude);
-                Log.d("DETAILS Lat ",Double.toString(details.getPlaceLatitude()));
-                Log.d("DETAILS Lon ",Double.toString(details.getPlaceLongitude()));
-                Log.d("DETAILS Address ",details.getPlaceAddress());
-                Log.d("DETAILS City ",details.getCity());
+                //details= getAddress(longitude,latitude);
+                getDetailsFromAPI(latitude+","+longitude,"AIzaSyDazjxsJFdohTwZllHdMsacB4P9luVjqyE");
 
-                HashMap<String, String> params = new HashMap<>();
-                params.put("placeLatitude",String.valueOf(details.getPlaceLatitude()));
-                params.put("placeLongitude",String.valueOf(details.getPlaceLongitude()));
-                params.put("placeAddress",details.getPlaceAddress());
-                params.put("city",details.getCity());
-
-                PerformNetworkRequest request = new PerformNetworkRequest(Api.URL_CREATE_LIST, params, CODE_POST_REQUEST);
-                request.execute();
+//                HashMap<String, String> params = new HashMap<>();
+//                params.put("placeLatitude",String.valueOf(details.getPlaceLatitude()));
+//                params.put("placeLongitude",String.valueOf(details.getPlaceLongitude()));
+//                params.put("placeAddress",details.getPlaceAddress());
+//                params.put("city",details.getCity());
+//
+//                PerformNetworkRequest request = new PerformNetworkRequest(Api.URL_CREATE_LIST, params, CODE_POST_REQUEST);
+//                request.execute();
                 // visitAddress.add(details);
             }
         }
     };
-
 
     @Nullable
     @Override
@@ -86,7 +84,6 @@ public class LocationService extends Service {
 
     private void startLocation()
     {
-
         if (countDownTimer != null) {
            countDownTimer.cancel();
         }
@@ -133,12 +130,7 @@ public class LocationService extends Service {
                 stopLocation();
             }
         };
-
-
         countDownTimer.start();
-      //  visitAddress= new ArrayList<>();
-
-
     }
 
 
@@ -149,6 +141,33 @@ public class LocationService extends Service {
         stopSelf();
      //   countDownTimer.cancel();
 
+    }
+
+    public void getDetailsFromAPI(String location, final String api_key){
+        final ApiInterface apiInterface= ApiClient.getClient().create(ApiInterface.class);
+        Call<ResponseModel> call= apiInterface.getDetails(location,1,api_key);
+        call.enqueue(new Callback<ResponseModel>() {
+            @Override
+            public void onResponse(Call<ResponseModel> call, Response<ResponseModel> response) {
+                if(response.isSuccessful()){
+                    try{
+
+                    }
+                    catch (Exception e){
+
+                    }
+
+                }
+                else{
+                    Log.d("Response: " , response.message());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseModel> call, Throwable t) {
+                Log.d("Response: " , t.getMessage());
+            }
+        });
     }
 
     private place getAddress(double Longitude, double Latitude){
@@ -166,7 +185,7 @@ public class LocationService extends Service {
             String postalCode = addresses.get(0).getPostalCode();
             String knownName = addresses.get(0).getFeatureName();
 
-            completeDetails= new place(Latitude,Longitude,address,city);
+            //completeDetails= new place(Latitude,Longitude,address,city);
             Log.d("LOCATION Push","Push In DB");
             Log.d("LOCATION_DETAILS",Latitude+", "+Longitude+", "+knownName+", "+address);
 
@@ -243,7 +262,6 @@ public class LocationService extends Service {
 
             if (requestCode == CODE_POST_REQUEST)
                 return requestHandler.sendPostRequest(url, params);
-
 
             if (requestCode == CODE_GET_REQUEST)
                 return requestHandler.sendGetRequest(url);

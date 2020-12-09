@@ -25,6 +25,13 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.masterandroid.backgroundservice.retrofit.ApiClient;
+import com.masterandroid.backgroundservice.retrofit.ApiInterface;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class MainActivity extends AppCompatActivity {
 
     static CountDownTimer countDownTimer = null;

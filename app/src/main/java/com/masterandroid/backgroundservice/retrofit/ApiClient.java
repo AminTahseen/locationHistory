@@ -6,9 +6,8 @@ import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 public class ApiClient {
     private static final
-    String BASE_URL="http://10.33.32.83/locationhistory/";
+    String BASE_URL="https://maps.googleapis.com/maps/api/place/";
     private static Retrofit retrofit=null;
-
     public static Retrofit getClient()
     {
         if(retrofit==null)
