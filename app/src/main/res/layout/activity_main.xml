@@ -5,25 +5,61 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:gravity="center"
+    android:layout_margin="10dp"
     tools:context=".MainActivity">
 
-    <Button
-        android:id="@+id/startService"
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:src="@drawable/place"
+        app:layout_constraintBottom_toBottomOf="@id/latlng"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Service on"/>
+        android:text="Location History"
+        android:layout_marginBottom="20dp"
+        android:gravity="center"
+        android:textColor="#000"
+        android:textStyle="bold"
+        android:textSize="25dp"/>
 
-    <Button
-        android:id="@+id/stopService"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="service off"/>
+        android:orientation="horizontal"
+        android:weightSum="2">
+        <Button
+            android:id="@+id/startService"
+            android:background="@color/colorPrimaryDark"
+            android:textColor="#fff"
+            android:layout_weight="1"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:text="Start Service"/>
+
+        <Button
+            android:background="@color/colorPrimary"
+            android:textColor="#fff"
+            android:layout_weight="1"
+            android:id="@+id/stopService"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:text="Stop Service"/>
+    </LinearLayout>
+
 
     <Button
+        android:background="@color/colorPrimaryDark"
+        android:textColor="#fff"
         android:id="@+id/show"
+        android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="show"/>
+        android:text="Show History"/>
 
     <TextView
         android:layout_width="wrap_content"
