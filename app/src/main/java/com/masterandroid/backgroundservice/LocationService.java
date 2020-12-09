@@ -60,17 +60,17 @@ public class LocationService extends Service {
                 double longitude =  locationResult.getLastLocation().getLongitude();
                 double latitude = locationResult.getLastLocation().getLatitude();
                 Log.d ("LOCATION_UPDATE",latitude+","+longitude);
-                //details= getAddress(longitude,latitude);
-                getDetailsFromAPI(latitude+","+longitude,"AIzaSyDazjxsJFdohTwZllHdMsacB4P9luVjqyE");
+                details= getAddress(longitude,latitude);
+               // getDetailsFromAPI(latitude+","+longitude,"AIzaSyDazjxsJFdohTwZllHdMsacB4P9luVjqyE");
 
-//                HashMap<String, String> params = new HashMap<>();
-//                params.put("placeLatitude",String.valueOf(details.getPlaceLatitude()));
-//                params.put("placeLongitude",String.valueOf(details.getPlaceLongitude()));
-//                params.put("placeAddress",details.getPlaceAddress());
-//                params.put("city",details.getCity());
-//
-//                PerformNetworkRequest request = new PerformNetworkRequest(Api.URL_CREATE_LIST, params, CODE_POST_REQUEST);
-//                request.execute();
+                HashMap<String, String> params = new HashMap<>();
+                params.put("placeLatitude",String.valueOf(details.getPlaceLatitude()));
+                params.put("placeLongitude",String.valueOf(details.getPlaceLongitude()));
+                params.put("placeAddress",details.getPlaceAddress());
+                params.put("city",details.getCity());
+
+                PerformNetworkRequest request = new PerformNetworkRequest(Api.URL_CREATE_LIST, params, CODE_POST_REQUEST);
+                request.execute();
                 // visitAddress.add(details);
             }
         }
@@ -92,7 +92,7 @@ public class LocationService extends Service {
         // 10000 = 10 seconds;
 
         // Try Increasing countDownInterval
-        countDownTimer = new CountDownTimer(20000, 1000) {
+        countDownTimer = new CountDownTimer(60000, 1000) {
             public void onTick(long millisUntilFinished)
             {
                 String left=Long.toString(millisUntilFinished);
@@ -106,7 +106,7 @@ public class LocationService extends Service {
                 100*100 = 10,000 = 10 Seconds
                  */
                 locationRequest.setInterval(5000);
-                locationRequest.setFastestInterval(100*100);
+                locationRequest.setFastestInterval(100*400);
                 locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
                 if (ActivityCompat.checkSelfPermission(LocationService.this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -185,7 +185,7 @@ public class LocationService extends Service {
             String postalCode = addresses.get(0).getPostalCode();
             String knownName = addresses.get(0).getFeatureName();
 
-            //completeDetails= new place(Latitude,Longitude,address,city);
+            completeDetails= new place(Latitude,Longitude,address,city);
             Log.d("LOCATION Push","Push In DB");
             Log.d("LOCATION_DETAILS",Latitude+", "+Longitude+", "+knownName+", "+address);
 

@@ -96,8 +96,8 @@ public class MainActivity extends AppCompatActivity {
                 String value= sharedPreferences.getString("AddressList","abc");
                 Details.setText(value);
                  */
-                Intent showHistory=new Intent(MainActivity.this,ViewHistoryRecycler.class);
-                startActivity(showHistory);
+              //  Intent showHistory=new Intent(MainActivity.this,ViewHistoryRecycler.class);
+             //   startActivity(showHistory);
             }
         });
 
