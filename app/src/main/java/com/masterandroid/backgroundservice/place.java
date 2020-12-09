@@ -3,8 +3,6 @@ package com.masterandroid.backgroundservice;
 import com.google.gson.annotations.SerializedName;
 
 public class place {
-
-
     private double placeLatitude;
     private double placeLongitude;
 

@@ -60,8 +60,8 @@ public class LocationService extends Service {
                 double longitude =  locationResult.getLastLocation().getLongitude();
                 double latitude = locationResult.getLastLocation().getLatitude();
                 Log.d ("LOCATION_UPDATE",latitude+","+longitude);
-                //details= getAddress(longitude,latitude);
-                getDetailsFromAPI(latitude+","+longitude,"AIzaSyDazjxsJFdohTwZllHdMsacB4P9luVjqyE");
+                details= getAddress(longitude,latitude);
+                //getDetailsFromAPI(latitude+","+longitude,"AIzaSyDazjxsJFdohTwZllHdMsacB4P9luVjqyE");
 
 //                HashMap<String, String> params = new HashMap<>();
 //                params.put("placeLatitude",String.valueOf(details.getPlaceLatitude()));
