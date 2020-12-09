@@ -51,7 +51,7 @@ public class LocationService extends Service {
     place details;
     List<place> visitAddress;
     static CountDownTimer countDownTimer = null;
-
+    int hit_count=0;
     private LocationCallback locationCallback = new LocationCallback() {
         @Override
         public void onLocationResult(LocationResult locationResult) {
@@ -60,18 +60,20 @@ public class LocationService extends Service {
                 double longitude =  locationResult.getLastLocation().getLongitude();
                 double latitude = locationResult.getLastLocation().getLatitude();
                 Log.d ("LOCATION_UPDATE",latitude+","+longitude);
-                //details= getAddress(longitude,latitude);
-                getDetailsFromAPI(latitude+","+longitude,"AIzaSyDazjxsJFdohTwZllHdMsacB4P9luVjqyE");
+                details= getAddress(longitude,latitude);
+               // getDetailsFromAPI(latitude+","+longitude,"AIzaSyDazjxsJFdohTwZllHdMsacB4P9luVjqyE");
 
-//                HashMap<String, String> params = new HashMap<>();
-//                params.put("placeLatitude",String.valueOf(details.getPlaceLatitude()));
-//                params.put("placeLongitude",String.valueOf(details.getPlaceLongitude()));
-//                params.put("placeAddress",details.getPlaceAddress());
-//                params.put("city",details.getCity());
-//
-//                PerformNetworkRequest request = new PerformNetworkRequest(Api.URL_CREATE_LIST, params, CODE_POST_REQUEST);
-//                request.execute();
-                // visitAddress.add(details);
+
+                HashMap<String, String> params = new HashMap<>();
+               params.put("placeLatitude",String.valueOf(details.getPlaceLatitude()));
+               params.put("placeLongitude",String.valueOf(details.getPlaceLongitude()));
+                params.put("placeAddress",details.getPlaceAddress());
+              params.put("city",details.getCity());
+
+               PerformNetworkRequest request = new PerformNetworkRequest(Api.URL_CREATE_LIST, params, CODE_POST_REQUEST);
+              request.execute();
+//                visitAddress.add(details);
+
             }
         }
     };
@@ -89,10 +91,13 @@ public class LocationService extends Service {
         }
         // 60*1*1000 = 1 min
         // 50000 = 50 seconds
-        // 10000 = 10 seconds;
+        // 10000 = 10 seconds
+        // 20000 = 20 seconds
+        // 60000 = 60 seconds (1 min)
+        // 15*60000 = 900 seconds (15 min)
 
         // Try Increasing countDownInterval
-        countDownTimer = new CountDownTimer(20000, 1000) {
+        countDownTimer = new CountDownTimer( 60000, 1000) {
             public void onTick(long millisUntilFinished)
             {
                 String left=Long.toString(millisUntilFinished);
@@ -103,10 +108,22 @@ public class LocationService extends Service {
                 // Try adjusting the location.setFastestInterval
                 /*
                 50*100 = 5,000 = 5 Seconds
-                100*100 = 10,000 = 10 Seconds
+                100*100 = 10,000 = 10 Seconds = 6 Hits
+
+                100*200 = 20,000 = 20 Seconds = 3 Hits (1 initial 2 service )
+                100*300 = 30,000 = 30 Seconds = 2 Hits (Prefer) (1 initial, 1 service )
+                100*400 = 40,000 = 40 Seconds = 2 Hits
+                100*500 = 50,000 = 50 Seconds = 2 Hits
+                100*600 = 60,000 = 60 Seconds = 1 Hits
+
+                // try
+                100*900 = 90,000 = 90 Seconds
+
+                200*200 = 40,000 = 40 Seconds
+
                  */
                 locationRequest.setInterval(5000);
-                locationRequest.setFastestInterval(100*100);
+                locationRequest.setFastestInterval(100*400);
                 locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
                 if (ActivityCompat.checkSelfPermission(LocationService.this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -128,6 +145,7 @@ public class LocationService extends Service {
             {
                 Log.d("done!", "done!");
                 stopLocation();
+                Log.d("API Total Hits ",Integer.toString(hit_count));
             }
         };
         countDownTimer.start();
@@ -185,10 +203,11 @@ public class LocationService extends Service {
             String postalCode = addresses.get(0).getPostalCode();
             String knownName = addresses.get(0).getFeatureName();
 
-            //completeDetails= new place(Latitude,Longitude,address,city);
+            completeDetails= new place(Latitude,Longitude,address,city);
             Log.d("LOCATION Push","Push In DB");
             Log.d("LOCATION_DETAILS",Latitude+", "+Longitude+", "+knownName+", "+address);
-
+            hit_count++;
+            Log.d("API HIT Count ",Integer.toString(hit_count));
         } catch (IOException e) {
             e.printStackTrace();
         }

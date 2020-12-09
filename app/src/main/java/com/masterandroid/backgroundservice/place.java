@@ -23,6 +23,13 @@ public class place {
         this.city = city;
     }
 
+    public place(double placeLatitude, double placeLongitude, String placeAddress, String city) {
+        this.placeLatitude = placeLatitude;
+        this.placeLongitude = placeLongitude;
+        this.placeAddress = placeAddress;
+        this.city = city;
+    }
+
     public place(){
 
     }
