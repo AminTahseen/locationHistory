@@ -2,7 +2,9 @@ package com.masterandroid.backgroundservice;
 
 import android.Manifest;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -12,31 +14,44 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
+
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
+
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+
 import com.masterandroid.backgroundservice.retrofit.ApiClient;
 import com.masterandroid.backgroundservice.retrofit.ApiInterface;
+
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.jar.JarEntry;
+
+import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class LocationService extends Service {
+    ApiInterface retrofit_API;
     private static final int CODE_GET_REQUEST = 1024;
     private static final int CODE_POST_REQUEST = 1025;
     place details;
+    List<place> visitAddress;
     static CountDownTimer countDownTimer = null;
-    List<place> place_detailsArrayList;
+
     private LocationCallback locationCallback = new LocationCallback() {
         @Override
         public void onLocationResult(LocationResult locationResult) {
@@ -45,9 +60,23 @@ public class LocationService extends Service {
                 double longitude =  locationResult.getLastLocation().getLongitude();
                 double latitude = locationResult.getLastLocation().getLatitude();
                 Log.d ("LOCATION_UPDATE",latitude+","+longitude);
-                details= getGeocodingDetails(longitude,latitude);
+                details= getAddress(longitude,latitude);
                // getDetailsFromAPI(latitude+","+longitude,"AIzaSyDazjxsJFdohTwZllHdMsacB4P9luVjqyE");
-                storeDataInDatabase(details,latitude,longitude);
+                getPlaceSearchDetails(details.getPlaceAddress(),
+                        "textquery",
+                        "photos,formatted_address,name,opening_hours,rating,types",
+                        "circle:2000@"+latitude+","+longitude,
+                        "AIzaSyDazjxsJFdohTwZllHdMsacB4P9luVjqyE");
+
+                HashMap<String, String> params = new HashMap<>();
+                params.put("placeLatitude",String.valueOf(details.getPlaceLatitude()));
+                params.put("placeLongitude",String.valueOf(details.getPlaceLongitude()));
+                params.put("placeAddress",details.getPlaceAddress());
+                params.put("city",details.getCity());
+
+                PerformNetworkRequest request = new PerformNetworkRequest(Api.URL_CREATE_LIST, params, CODE_POST_REQUEST);
+                request.execute();
+                // visitAddress.add(details);
             }
         }
     };
@@ -115,27 +144,8 @@ public class LocationService extends Service {
                 .removeLocationUpdates(locationCallback);
         stopForeground(true);
         stopSelf();
-      countDownTimer.cancel();
+     //   countDownTimer.cancel();
 
-    }
-    public void storeDataInDatabase(place obj,Double lat,Double lng)
-    {
-        getPlaceSearchDetails(obj.getPlaceAddress(),
-                "textquery",
-                "photos,formatted_address,name,opening_hours,rating,types",
-                "circle:2000@"+lat+","+lng,
-                "AIzaSyDazjxsJFdohTwZllHdMsacB4P9luVjqyE");
-
-        /*
-        HashMap<String, String> params = new HashMap<>();
-        params.put("placeLatitude",String.valueOf(obj.getPlaceLatitude()));
-        params.put("placeLongitude",String.valueOf(obj.getPlaceLongitude()));
-        params.put("placeAddress",obj.getPlaceAddress());
-        params.put("city",obj.getCity());
-
-        PerformNetworkRequest request = new PerformNetworkRequest(Api.URL_CREATE_LIST, params, CODE_POST_REQUEST);
-        request.execute();
-         */
     }
 
     public void getDetailsFromAPI(String location, final String api_key){
@@ -154,7 +164,7 @@ public class LocationService extends Service {
 
                 }
                 else{
-                    Log.d("Else Response: " , response.message());
+                    Log.d("Response: " , response.message());
                 }
             }
 
@@ -166,37 +176,27 @@ public class LocationService extends Service {
     }
 
     public void getPlaceSearchDetails(String input, String inputtime, String fields,String location,String key){
-        place_detailsArrayList=new ArrayList<>();
         final ApiInterface apiInterface= ApiClient.getClient().create(ApiInterface.class);
         Call <ResponseModel> call=apiInterface.getPlaceSearch(input,inputtime,fields,location,key);
         call.enqueue(new Callback<ResponseModel>() {
             @Override
             public void onResponse(Call<ResponseModel> call, Response<ResponseModel> response) {
-                if(response.isSuccessful())
-                {
-                    place_detailsArrayList=response.body().getCandidates();
-                    for(int i=0;i<place_detailsArrayList.size();i++)
-                    {
-                        String name=place_detailsArrayList.get(i).getPlaceName();
-                        String address=place_detailsArrayList.get(i).getPlaceAddress();
-                       // Log.d("API Success",place_detailsArrayList.get(i).getPlaceName());
-                        String type= place_detailsArrayList.get(i).getPlaceType().toString();
+                if(response.isSuccessful()){
 
-                        Log.d("Full Details ",name+' '+address+' '+type);
-                    }
                 }
                 else{
 
                 }
             }
+
             @Override
             public void onFailure(Call<ResponseModel> call, Throwable t) {
-                Log.d("onFailure Response: " , t.getMessage());
+                Log.d("Response: " , t.getMessage());
             }
         });
     }
 
-    private place getGeocodingDetails(double Longitude, double Latitude){
+    private place getAddress(double Longitude, double Latitude){
         Geocoder geocoder;
         place completeDetails=null;
         List<Address> addresses= new ArrayList<>();
@@ -211,7 +211,7 @@ public class LocationService extends Service {
             String postalCode = addresses.get(0).getPostalCode();
             String knownName = addresses.get(0).getFeatureName();
 
-            completeDetails= new place(Latitude,Longitude,address);
+            completeDetails= new place(Latitude,Longitude,address,city);
             Log.d("LOCATION Push","Push In DB");
             Log.d("LOCATION_DETAILS",Latitude+", "+Longitude+", "+knownName+", "+address);
 
