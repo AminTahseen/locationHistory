@@ -6,16 +6,19 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
 import com.masterandroid.backgroundservice.adapter.MainAdapter;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -37,23 +40,55 @@ public class ViewHistoryRecycler extends AppCompatActivity {
         refresh_history.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-
-                MainAdapter adapter=new MainAdapter(historyList,ViewHistoryRecycler.this);
-                historyRecycler.setAdapter(adapter);
-
+                readHistory();
             }
         });
     }
+    private void readHistory() {
+        PerformNetworkRequest request = new PerformNetworkRequest(Api.URL_READ_LIST, null, CODE_GET_REQUEST);
+        request.execute();
+    }
+
+    private void refreshHistoryList(JSONArray heroes) throws JSONException {
+        //clearing previous heroes
+       // historyList.clear();
+
+        //traversing through all the items in the json array
+        //the json we got from the response
+        for (int i = 0; i < heroes.length(); i++) {
+            //getting each hero object
+            JSONObject obj = heroes.getJSONObject(i);
+
+            //adding the hero to the list
+            String type= obj.getString("placeType");
+            String str[] = type.split(",");
+            ArrayList<String> placeType = new ArrayList<String>(Arrays.asList(str));
+            place p=new place(
+                    obj.getDouble("placeLongitude"), obj.getDouble("placeLatitude"),
+                    obj.getString("placeAddress"),
+                    obj.getString("placeName"),
+                    placeType);
+            Log.d("place",p.toString());
+            historyList.add(p);
+
+
+            //creating the adapter and setting it to the recyclerview
+
+
+        }
+
+        Log.d("List Size ",Integer.toString(historyList.size()));
+        MainAdapter adapter = new MainAdapter(historyList,ViewHistoryRecycler.this);
+        historyRecycler.setAdapter(adapter);
+    }
+
 
     private class PerformNetworkRequest extends AsyncTask<Void, Void, String> {
 
         //the url where we need to send the request
         String url;
-
         //the parameters
         HashMap<String, String> params;
-
         //the request code to define whether it is a GET or POST
         int requestCode;
 
@@ -83,7 +118,7 @@ public class ViewHistoryRecycler extends AppCompatActivity {
                     //so we get an updated list
                     //we will create this method right now it is commented
                     //because we haven't created it yet
-                    //refreshList(object.getJSONArray("myLists"));
+                    refreshHistoryList(object.getJSONArray("lists"));
                 }
             } catch (JSONException e) {
                 e.printStackTrace();

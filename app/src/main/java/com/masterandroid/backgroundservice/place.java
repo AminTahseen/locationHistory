@@ -72,4 +72,16 @@ public class place {
 
     public void setPlaceType(ArrayList<String> placeType) { this.placeType = placeType; }
 
+
+    @Override
+    public String toString() {
+        return "place{" +
+                "placeLatitude=" + placeLatitude +
+                ", placeLongitude=" + placeLongitude +
+                ", placeAddress='" + placeAddress + '\'' +
+                ", placeName='" + placeName + '\'' +
+                ", placeType=" + placeType +
+                '}';
+    }
+
 }

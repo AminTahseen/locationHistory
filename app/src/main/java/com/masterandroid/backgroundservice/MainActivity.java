@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent showHistory=new Intent(MainActivity.this,ViewHistoryRecycler.class);
-               startActivity(showHistory);
+                startActivity(showHistory);
             }
         });
 
