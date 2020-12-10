@@ -33,8 +33,9 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
         place data=historyList.get(position);
+        holder.name.setText(data.getPlaceName());
         holder.address.setText(data.getPlaceAddress());
-        holder.latlng.setText(Double.toString(data.getPlaceLatitude())+", "+Double.toString(data.getPlaceLongitude()));
+        holder.type.setText(data.getPlaceType().toString());
     }
 
     @Override
@@ -43,15 +44,15 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder  {
-        TextView city;
+        TextView name;
         TextView address;
-        TextView latlng;
+        TextView type;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            city=itemView.findViewById(R.id.city);
+            name=itemView.findViewById(R.id.name);
             address=itemView.findViewById(R.id.address);
-            latlng=itemView.findViewById(R.id.latlng);
+            type=itemView.findViewById(R.id.type);
 
         }
     }

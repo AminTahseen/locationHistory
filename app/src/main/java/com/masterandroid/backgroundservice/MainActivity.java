@@ -91,13 +91,8 @@ public class MainActivity extends AppCompatActivity {
         show.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*
-                SharedPreferences sharedPreferences= getSharedPreferences("Details",Context.MODE_PRIVATE);
-                String value= sharedPreferences.getString("AddressList","abc");
-                Details.setText(value);
-                 */
-              //  Intent showHistory=new Intent(MainActivity.this,ViewHistoryRecycler.class);
-             //   startActivity(showHistory);
+                Intent showHistory=new Intent(MainActivity.this,ViewHistoryRecycler.class);
+               startActivity(showHistory);
             }
         });
 

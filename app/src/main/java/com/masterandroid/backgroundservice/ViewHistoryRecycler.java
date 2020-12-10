@@ -4,17 +4,24 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.masterandroid.backgroundservice.adapter.MainAdapter;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class ViewHistoryRecycler extends AppCompatActivity {
-
+    private static final int CODE_GET_REQUEST = 1024;
+    private static final int CODE_POST_REQUEST = 1025;
     RecyclerView historyRecycler;
     Button refresh_history;
     List<place> historyList;
@@ -26,25 +33,75 @@ public class ViewHistoryRecycler extends AppCompatActivity {
         historyRecycler.setLayoutManager(new LinearLayoutManager(this));
         refresh_history=findViewById(R.id.refresh_history);
         historyList=new ArrayList<>();
-        /*
-        * Los Angeles
-        * 1174 E 59th Pl, Los Angeles, CA 90001, USA
-        * 33.985805, -118.2541117
-        * */
+
         refresh_history.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-              /*  place visit=new place(33.985805,-118.2541117,
-                        "1174 E 59th Pl, Los Angeles, CA 90001, USA","Los Angeles");
-                place visit2=new place(32.455695,-118.2534223,
-                        "1174 E 59th Pl, Amsterdam, CA 90001, USA","Amsterdam");
-                historyList.add(visit);
-                historyList.add(visit2);
+
 
                 MainAdapter adapter=new MainAdapter(historyList,ViewHistoryRecycler.this);
                 historyRecycler.setAdapter(adapter);
-*/
+
             }
         });
+    }
+
+    private class PerformNetworkRequest extends AsyncTask<Void, Void, String> {
+
+        //the url where we need to send the request
+        String url;
+
+        //the parameters
+        HashMap<String, String> params;
+
+        //the request code to define whether it is a GET or POST
+        int requestCode;
+
+        //constructor to initialize values
+        PerformNetworkRequest(String url, HashMap<String, String> params, int requestCode) {
+            this.url = url;
+            this.params = params;
+            this.requestCode = requestCode;
+        }
+
+        //when the task started displaying a progressbar
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+
+        //this method will give the response from the request
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            try {
+                JSONObject object = new JSONObject(s);
+                if (!object.getBoolean("error")) {
+                    Toast.makeText(getApplicationContext(), object.getString("message"), Toast.LENGTH_SHORT).show();
+                    //refreshing the herolist after every operation
+                    //so we get an updated list
+                    //we will create this method right now it is commented
+                    //because we haven't created it yet
+                    //refreshList(object.getJSONArray("myLists"));
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        //the network operation will be performed in background
+        @Override
+        protected String doInBackground(Void... voids) {
+            RequestHandler requestHandler = new RequestHandler();
+
+            if (requestCode == CODE_POST_REQUEST)
+                return requestHandler.sendPostRequest(url, params);
+
+            if (requestCode == CODE_GET_REQUEST)
+                return requestHandler.sendGetRequest(url);
+
+            return null;
+        }
     }
 }

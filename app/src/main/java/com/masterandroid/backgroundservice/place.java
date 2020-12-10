@@ -18,7 +18,6 @@ public class place {
     @SerializedName("types")
     private ArrayList<String> placeType;
 
-
     public place(double placeLatitude, double placeLongitude, String placeAddress, String placeName, ArrayList<String> placeType) {
         this.placeLatitude = placeLatitude;
         this.placeLongitude = placeLongitude;
