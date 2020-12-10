@@ -62,6 +62,11 @@ public class LocationService extends Service {
                 Log.d ("LOCATION_UPDATE",latitude+","+longitude);
                 details= getAddress(longitude,latitude);
                // getDetailsFromAPI(latitude+","+longitude,"AIzaSyDazjxsJFdohTwZllHdMsacB4P9luVjqyE");
+                getPlaceSearchDetails(details.getPlaceAddress(),
+                        "textquery",
+                        "photos,formatted_address,name,opening_hours,rating,types",
+                        "circle:2000@"+latitude+","+longitude,
+                        "AIzaSyDazjxsJFdohTwZllHdMsacB4P9luVjqyE");
 
                 HashMap<String, String> params = new HashMap<>();
                 params.put("placeLatitude",String.valueOf(details.getPlaceLatitude()));
@@ -160,6 +165,27 @@ public class LocationService extends Service {
                 }
                 else{
                     Log.d("Response: " , response.message());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseModel> call, Throwable t) {
+                Log.d("Response: " , t.getMessage());
+            }
+        });
+    }
+
+    public void getPlaceSearchDetails(String input, String inputtime, String fields,String location,String key){
+        final ApiInterface apiInterface= ApiClient.getClient().create(ApiInterface.class);
+        Call <ResponseModel> call=apiInterface.getPlaceSearch(input,inputtime,fields,location,key);
+        call.enqueue(new Callback<ResponseModel>() {
+            @Override
+            public void onResponse(Call<ResponseModel> call, Response<ResponseModel> response) {
+                if(response.isSuccessful()){
+
+                }
+                else{
+
                 }
             }
 

@@ -15,6 +15,7 @@ public interface ApiInterface {
     @GET("nearbysearch/json?")
     Call<ResponseModel> getDetails(@Query("location") String Location, @Query("radius") int Radius, @Query("key")String ApiKey);
 
-    @GET("api/place/details/json?")
-    Call<ResponseModel> getPhoto(@Query("reference") String Reference, @Query("key")String ApiKey);
+    @GET("findplacefromtext/json?")
+    Call<ResponseModel> getPlaceSearch(@Query("input") String Input, @Query("inputtype")String InputType
+    ,@Query("fields") String Fields, @Query("locationbias") String LocationBias, @Query("key") String Api_Key);
 }

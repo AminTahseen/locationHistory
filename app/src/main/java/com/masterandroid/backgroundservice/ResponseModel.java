@@ -11,6 +11,17 @@ public class ResponseModel {
     @SerializedName("status")
     private String status;
 
+    @SerializedName("candidates")
+    private List<place> candidates;
+
+    public List<place> getCandidates() {
+        return candidates;
+    }
+
+    public void setCandidates(List<place> candidates) {
+        this.candidates = candidates;
+    }
+
     public List<place> getResults() {
         return results;
     }
