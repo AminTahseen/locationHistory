@@ -118,24 +118,28 @@ public class LocationService extends Service {
       countDownTimer.cancel();
 
     }
-    public void storeDataInDatabase(place obj,Double lat,Double lng)
+    public void storeDataInDatabase(place obj,double lat,double lng)
     {
-        getPlaceSearchDetails(obj.getPlaceAddress(),
+        getPlaceSearchDetails(lat,lng,obj.getPlaceAddress(),
                 "textquery",
                 "photos,formatted_address,name,opening_hours,rating,types",
                 "circle:2000@"+lat+","+lng,
                 "AIzaSyDazjxsJFdohTwZllHdMsacB4P9luVjqyE");
 
-        /*
+
+    }
+    public void storeData( String name, String address,String type,double latitude, double longitude){
+
         HashMap<String, String> params = new HashMap<>();
-        params.put("placeLatitude",String.valueOf(obj.getPlaceLatitude()));
-        params.put("placeLongitude",String.valueOf(obj.getPlaceLongitude()));
-        params.put("placeAddress",obj.getPlaceAddress());
-        params.put("city",obj.getCity());
+        params.put("placeLatitude",String.valueOf(latitude));
+        params.put("placeLongitude",String.valueOf(longitude));
+        params.put("placeAddress",address);
+        params.put("placeName",name);
+        params.put("placeType",type);
 
         PerformNetworkRequest request = new PerformNetworkRequest(Api.URL_CREATE_LIST, params, CODE_POST_REQUEST);
         request.execute();
-         */
+
     }
 
     public void getDetailsFromAPI(String location, final String api_key){
@@ -165,7 +169,7 @@ public class LocationService extends Service {
         });
     }
 
-    public void getPlaceSearchDetails(String input, String inputtime, String fields,String location,String key){
+    public void getPlaceSearchDetails(double latitude, double longitude, String input, String inputtime, String fields,String location,String key){
         place_detailsArrayList=new ArrayList<>();
         final ApiInterface apiInterface= ApiClient.getClient().create(ApiInterface.class);
         Call <ResponseModel> call=apiInterface.getPlaceSearch(input,inputtime,fields,location,key);
@@ -174,6 +178,7 @@ public class LocationService extends Service {
             public void onResponse(Call<ResponseModel> call, Response<ResponseModel> response) {
                 if(response.isSuccessful())
                 {
+                    place myPlace= new place();
                     place_detailsArrayList=response.body().getCandidates();
                     for(int i=0;i<place_detailsArrayList.size();i++)
                     {
@@ -181,8 +186,9 @@ public class LocationService extends Service {
                         String address=place_detailsArrayList.get(i).getPlaceAddress();
                        // Log.d("API Success",place_detailsArrayList.get(i).getPlaceName());
                         String type= place_detailsArrayList.get(i).getPlaceType().toString();
-                        // Test
                         Log.d("Full Details ",name+' '+address+' '+type);
+                        storeData(name,address,type,latitude,longitude);
+
                     }
                 }
                 else{
@@ -212,7 +218,6 @@ public class LocationService extends Service {
             String knownName = addresses.get(0).getFeatureName();
 
             completeDetails= new place(Latitude,Longitude,address);
-            Log.d("LOCATION Push","Push In DB");
             Log.d("LOCATION_DETAILS",Latitude+", "+Longitude+", "+knownName+", "+address);
 
         } catch (IOException e) {
