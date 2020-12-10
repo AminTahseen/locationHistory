@@ -153,6 +153,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /*
     private void Notification(){
         String channelId = "location notification channel";
         NotificationCompat.Builder builder;
@@ -188,4 +189,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+
+     */
+
 }
