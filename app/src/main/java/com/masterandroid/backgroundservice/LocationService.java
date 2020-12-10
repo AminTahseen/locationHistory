@@ -181,7 +181,7 @@ public class LocationService extends Service {
                         String address=place_detailsArrayList.get(i).getPlaceAddress();
                        // Log.d("API Success",place_detailsArrayList.get(i).getPlaceName());
                         String type= place_detailsArrayList.get(i).getPlaceType().toString();
-
+                        // Test
                         Log.d("Full Details ",name+' '+address+' '+type);
                     }
                 }
