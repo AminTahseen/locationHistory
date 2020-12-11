@@ -132,7 +132,7 @@ public class LocationService extends Service {
 
 
     }
-    public void storeData( String UserId, String name, String address,String type,double latitude, double longitude){
+    public void storeData( String UserId, String name, String address,String type,double latitude, double longitude, String VisitStatus){
 
         HashMap<String, String> params = new HashMap<>();
 
@@ -142,6 +142,7 @@ public class LocationService extends Service {
         params.put("placeAddress",address);
         params.put("placeName",name);
         params.put("placeType",type);
+        params.put("visitStatus",VisitStatus);
 
         PerformNetworkRequest request = new PerformNetworkRequest(Api.URL_CREATE_LIST, params, CODE_POST_REQUEST);
         request.execute();
@@ -196,7 +197,7 @@ public class LocationService extends Service {
                         FirebaseAuth mAuth=FirebaseAuth.getInstance();
                         currentUser = mAuth.getCurrentUser();
 
-                        storeData(currentUser.getUid(),name,address,type,latitude,longitude);
+                        storeData(currentUser.getUid(),name,address,type,latitude,longitude,"pending");
 
                     }
                 }
