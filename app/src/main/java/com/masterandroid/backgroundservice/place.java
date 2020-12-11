@@ -89,6 +89,9 @@ public class place {
 
     public void setPlaceType(ArrayList<String> placeType) { this.placeType = placeType; }
 
+    public String getStatus() { return status; }
+
+    public void setStatus(String status) { this.status = status; }
 
     @Override
     public String toString() {

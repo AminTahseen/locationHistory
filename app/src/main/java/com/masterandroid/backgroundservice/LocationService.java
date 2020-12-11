@@ -132,7 +132,8 @@ public class LocationService extends Service {
 
 
     }
-    public void storeData( String UserId, String name, String address,String type,double latitude, double longitude, String VisitStatus){
+    public void storeData(String UserId, String name, String address,String type,double latitude, double longitude, String VisitStatus)
+    {
 
         HashMap<String, String> params = new HashMap<>();
 
@@ -185,7 +186,7 @@ public class LocationService extends Service {
             public void onResponse(Call<ResponseModel> call, Response<ResponseModel> response) {
                 if(response.isSuccessful())
                 {
-                    place myPlace= new place();
+                    //place myPlace= new place();
                     place_detailsArrayList=response.body().getCandidates();
                     for(int i=0;i<place_detailsArrayList.size();i++)
                     {
