@@ -5,6 +5,9 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 
 public class place {
+
+    private String userId;
+
     private double placeLatitude;
 
     private double placeLongitude;
@@ -18,23 +21,31 @@ public class place {
     @SerializedName("types")
     private ArrayList<String> placeType;
 
-    public place(double placeLatitude, double placeLongitude, String placeAddress, String placeName, ArrayList<String> placeType) {
+    public place(String userId, double placeLatitude, double placeLongitude, String placeAddress, String placeName, ArrayList<String> placeType) {
         this.placeLatitude = placeLatitude;
         this.placeLongitude = placeLongitude;
         this.placeAddress = placeAddress;
         this.placeName = placeName;
         this.placeType = placeType;
+        this.userId=userId;
     }
 
-
-
-    public place(double placeLatitude, double placeLongitude, String placeAddress) {
+    public place(String userId, double placeLatitude, double placeLongitude, String placeAddress) {
+        this.userId=userId;
         this.placeLatitude = placeLatitude;
         this.placeLongitude = placeLongitude;
         this.placeAddress = placeAddress;
     }
 
     public place() { }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
 
     public String getPlaceName() {
         return placeName;

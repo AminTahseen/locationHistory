@@ -128,9 +128,11 @@ public class LocationService extends Service {
 
 
     }
-    public void storeData( String name, String address,String type,double latitude, double longitude){
+    public void storeData( String UserId, String name, String address,String type,double latitude, double longitude){
 
         HashMap<String, String> params = new HashMap<>();
+
+        params.put("userId",UserId);
         params.put("placeLatitude",String.valueOf(latitude));
         params.put("placeLongitude",String.valueOf(longitude));
         params.put("placeAddress",address);
@@ -187,7 +189,7 @@ public class LocationService extends Service {
                        // Log.d("API Success",place_detailsArrayList.get(i).getPlaceName());
                         String type= place_detailsArrayList.get(i).getPlaceType().toString();
                         Log.d("Full Details ",name+' '+address+' '+type);
-                        storeData(name,address,type,latitude,longitude);
+                        storeData("hello",name,address,type,latitude,longitude);
 
                     }
                 }
@@ -217,7 +219,7 @@ public class LocationService extends Service {
             String postalCode = addresses.get(0).getPostalCode();
             String knownName = addresses.get(0).getFeatureName();
 
-            completeDetails= new place(Latitude,Longitude,address);
+            completeDetails= new place("hello",Latitude,Longitude,address);
             Log.d("LOCATION_DETAILS",Latitude+", "+Longitude+", "+knownName+", "+address);
 
         } catch (IOException e) {
