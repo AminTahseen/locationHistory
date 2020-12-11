@@ -64,7 +64,8 @@ public class ViewHistoryRecycler extends AppCompatActivity {
             String str[] = type.split(",");
             ArrayList<String> placeType = new ArrayList<String>(Arrays.asList(str));
             place p=new place(
-                    obj.getDouble("placeLongitude"), obj.getDouble("placeLatitude"),
+                    obj.getDouble("placeLongitude"),
+                    obj.getDouble("placeLatitude"),
                     obj.getString("placeAddress"),
                     obj.getString("placeName"),
                     placeType);
