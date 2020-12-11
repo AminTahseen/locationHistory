@@ -30,7 +30,8 @@ public class place {
         this.userId=userId;
     }
 
-    public place(double placeLatitude, double placeLongitude, String placeAddress) {
+    public place(String userId, double placeLatitude, double placeLongitude, String placeAddress) {
+        this.userId=userId;
         this.placeLatitude = placeLatitude;
         this.placeLongitude = placeLongitude;
         this.placeAddress = placeAddress;
