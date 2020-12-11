@@ -21,20 +21,26 @@ public class place {
     @SerializedName("types")
     private ArrayList<String> placeType;
 
-    public place(String userId, double placeLatitude, double placeLongitude, String placeAddress, String placeName, ArrayList<String> placeType) {
+    @SerializedName("visitStatus")
+    private String status;
+
+    public place(String userId, double placeLatitude, double placeLongitude, String placeAddress, String placeName,
+                 ArrayList<String> placeType, String visitStatus) {
         this.placeLatitude = placeLatitude;
         this.placeLongitude = placeLongitude;
         this.placeAddress = placeAddress;
         this.placeName = placeName;
         this.placeType = placeType;
         this.userId=userId;
+        this.status=visitStatus;
     }
 
-    public place(String userId, double placeLatitude, double placeLongitude, String placeAddress) {
+    public place(String userId, double placeLatitude, double placeLongitude, String placeAddress,String visitStatus) {
         this.userId=userId;
         this.placeLatitude = placeLatitude;
         this.placeLongitude = placeLongitude;
         this.placeAddress = placeAddress;
+        this.status=visitStatus;
     }
 
     public place() { }

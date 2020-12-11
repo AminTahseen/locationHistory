@@ -18,6 +18,8 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.masterandroid.backgroundservice.retrofit.ApiClient;
 import com.masterandroid.backgroundservice.retrofit.ApiInterface;
 import org.json.JSONException;
@@ -34,6 +36,8 @@ import retrofit2.Response;
 public class LocationService extends Service {
     private static final int CODE_GET_REQUEST = 1024;
     private static final int CODE_POST_REQUEST = 1025;
+    FirebaseUser currentUser;
+
     place details;
     static CountDownTimer countDownTimer = null;
     List<place> place_detailsArrayList;
@@ -189,7 +193,10 @@ public class LocationService extends Service {
                        // Log.d("API Success",place_detailsArrayList.get(i).getPlaceName());
                         String type= place_detailsArrayList.get(i).getPlaceType().toString();
                         Log.d("Full Details ",name+' '+address+' '+type);
-                        storeData("hello",name,address,type,latitude,longitude);
+                        FirebaseAuth mAuth=FirebaseAuth.getInstance();
+                        currentUser = mAuth.getCurrentUser();
+
+                        storeData(currentUser.getUid(),name,address,type,latitude,longitude);
 
                     }
                 }
@@ -219,7 +226,7 @@ public class LocationService extends Service {
             String postalCode = addresses.get(0).getPostalCode();
             String knownName = addresses.get(0).getFeatureName();
 
-            completeDetails= new place("hello",Latitude,Longitude,address);
+            completeDetails= new place("hello",Latitude,Longitude,address,"pending");
             Log.d("LOCATION_DETAILS",Latitude+", "+Longitude+", "+knownName+", "+address);
 
         } catch (IOException e) {

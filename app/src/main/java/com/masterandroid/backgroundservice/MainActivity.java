@@ -25,6 +25,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.masterandroid.backgroundservice.retrofit.ApiClient;
 import com.masterandroid.backgroundservice.retrofit.ApiInterface;
 
@@ -35,13 +37,11 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity {
 
     static CountDownTimer countDownTimer = null;
+    private FirebaseAuth mAuth;
 
-    Button start;
-    Button stop;
+    Button start,stop,Logout,show;
     TextView Details;
-    Button show;
     final int REQUEST_CODE_LOCATION_PERMISSION=1;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,7 +51,18 @@ public class MainActivity extends AppCompatActivity {
         stop= findViewById(R.id.stopService);
         Details= findViewById(R.id.details);
         show= findViewById(R.id.show);
+        Logout=findViewById(R.id.Logout);
+        mAuth=FirebaseAuth.getInstance();
 
+        Logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mAuth.signOut();
+                Intent signIn=new Intent(MainActivity.this,login.class);
+                finish();
+                startActivity(signIn);
+            }
+        });
         start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

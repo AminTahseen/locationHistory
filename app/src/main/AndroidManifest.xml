@@ -11,14 +11,15 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
         <activity android:name=".createAccount"></activity>
-        <activity android:name=".login" />
-        <activity android:name=".ViewHistoryRecycler" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".login" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity android:name=".ViewHistoryRecycler" />
+        <activity android:name=".MainActivity">
+
         </activity>
 
         <service
