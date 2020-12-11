@@ -131,6 +131,7 @@ public class LocationService extends Service {
     public void storeData( String name, String address,String type,double latitude, double longitude){
 
         HashMap<String, String> params = new HashMap<>();
+
         params.put("placeLatitude",String.valueOf(latitude));
         params.put("placeLongitude",String.valueOf(longitude));
         params.put("placeAddress",address);
