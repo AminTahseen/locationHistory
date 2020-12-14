@@ -67,12 +67,13 @@ public class LocationService extends Service {
         if (countDownTimer != null) {
            countDownTimer.cancel();
         }
-        // 60*1*1000 = 1 min
+        // 60*30*1000 = 30 min
         // 50000 = 50 seconds
-        // 10000 = 10 seconds;
+        // 10000 = 10 seconds
+        // 60000 = 60 seconds
 
         // Try Increasing countDownInterval
-        countDownTimer = new CountDownTimer(60000, 1000) {
+        countDownTimer = new CountDownTimer( 60000, 1000) {
             public void onTick(long millisUntilFinished)
             {
                 String left=Long.toString(millisUntilFinished);
@@ -84,6 +85,10 @@ public class LocationService extends Service {
                 /*
                 50*100 = 5,000 = 5 Seconds
                 100*100 = 10,000 = 10 Seconds
+                100*400 = 40,000 = 40 Seconds
+                100*600 = 60,000 = 60 Seconds
+                100*900 = 90,000 = 90 Seconds
+
                  */
                 locationRequest.setInterval(5000);
                 locationRequest.setFastestInterval(100*400);

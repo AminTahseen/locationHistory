@@ -6,6 +6,9 @@ import java.util.ArrayList;
 
 public class place {
 
+
+    private int placeId;
+
     private String userId;
 
     private double placeLatitude;
@@ -24,8 +27,9 @@ public class place {
     @SerializedName("visitStatus")
     private String status;
 
-    public place(String userId, double placeLatitude, double placeLongitude, String placeAddress, String placeName,
+    public place(int placeId, String userId, double placeLatitude, double placeLongitude, String placeAddress, String placeName,
                  ArrayList<String> placeType, String visitStatus) {
+        this.placeId=placeId;
         this.placeLatitude = placeLatitude;
         this.placeLongitude = placeLongitude;
         this.placeAddress = placeAddress;
@@ -92,6 +96,10 @@ public class place {
     public String getStatus() { return status; }
 
     public void setStatus(String status) { this.status = status; }
+
+    public int getPlaceId() { return placeId; }
+
+    public void setPlaceId(int placeId) { this.placeId = placeId; }
 
     @Override
     public String toString() {
