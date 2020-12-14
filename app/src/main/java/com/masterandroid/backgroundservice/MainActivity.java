@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
         Logout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                stopLocation();
                 mAuth.signOut();
                 Intent signIn=new Intent(MainActivity.this,login.class);
                 finish();
@@ -84,7 +85,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 stopLocation();
-
                 //for distance between two latlngs
 //                double earthRadius = 6371; //kilometers
 //                double dLat = Math.toRadians(24.343432-24.769594);
@@ -151,12 +151,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void stopLocation(){
+        /*
         if(isLocationServiceRunning()){
+
             Intent intent= new Intent(getApplicationContext(),LocationService.class);
             intent.setAction(Constants.ACTION_STOP_LOCATION_SERVICE);
             startService(intent);
-            Toast.makeText(this,"Stoped",Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,"Stopped",Toast.LENGTH_SHORT).show();
         }
+        */
+        Intent intent= new Intent(getApplicationContext(),LocationService.class);
+        stopService(intent);
+        Toast.makeText(this,"Stopped",Toast.LENGTH_SHORT).show();
+
     }
 
     /*

@@ -73,7 +73,7 @@ public class LocationService extends Service {
         // 60000 = 60 seconds
 
         // Try Increasing countDownInterval
-        countDownTimer = new CountDownTimer( 60000, 1000) {
+        countDownTimer = new CountDownTimer( 10000, 1000) {
             public void onTick(long millisUntilFinished)
             {
                 String left=Long.toString(millisUntilFinished);
@@ -119,7 +119,7 @@ public class LocationService extends Service {
     }
 
 
-    private void stopLocation(){
+    public void stopLocation(){
         LocationServices.getFusedLocationProviderClient(this)
                 .removeLocationUpdates(locationCallback);
         stopForeground(true);
@@ -127,7 +127,14 @@ public class LocationService extends Service {
       countDownTimer.cancel();
 
     }
-    public void storeDataInDatabase(place obj,double lat,double lng)
+
+    @Override
+    public void onDestroy() {
+        stopLocation();
+        super.onDestroy();
+    }
+
+    public void storeDataInDatabase(place obj, double lat, double lng)
     {
         getPlaceSearchDetails(lat,lng,obj.getPlaceAddress(),
                 "textquery",
@@ -157,7 +164,7 @@ public class LocationService extends Service {
 
     public void getDetailsFromAPI(String location, final String api_key){
         final ApiInterface apiInterface= ApiClient.getClient().create(ApiInterface.class);
-        Call<ResponseModel> call= apiInterface.getDetails(location,1,api_key);
+        Call<ResponseModel> call= apiInterface.getDetails(location,20,api_key);
         call.enqueue(new Callback<ResponseModel>() {
             @Override
             public void onResponse(Call<ResponseModel> call, Response<ResponseModel> response) {

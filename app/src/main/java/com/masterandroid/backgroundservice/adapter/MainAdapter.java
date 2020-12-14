@@ -1,7 +1,9 @@
 package com.masterandroid.backgroundservice.adapter;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,13 +18,21 @@ import com.masterandroid.backgroundservice.Api;
 import com.masterandroid.backgroundservice.LocationService;
 import com.masterandroid.backgroundservice.R;
 import com.masterandroid.backgroundservice.RequestHandler;
+import com.masterandroid.backgroundservice.ResponseModel;
 import com.masterandroid.backgroundservice.place;
+import com.masterandroid.backgroundservice.retrofit.ApiClient;
+import com.masterandroid.backgroundservice.retrofit.ApiInterface;
+import com.masterandroid.backgroundservice.showPlaceNearby;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
 
@@ -78,9 +88,13 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
         holder.editBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(activity, "Edit for "+data.getPlaceName(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity, "Nearby for "+data.getPlaceName(), Toast.LENGTH_SHORT).show();
                 holder.editBtn.setVisibility(View.GONE);
                 holder.noBtn.setVisibility(View.VISIBLE);
+                Intent showNearby=new Intent(activity, showPlaceNearby.class);
+                showNearby.putExtra("placeLat",data.getPlaceLatitude());
+                showNearby.putExtra("placeLon",data.getPlaceLongitude());
+                activity.startActivity(showNearby);
             }
         });
     }
@@ -112,7 +126,32 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
             editBtn=itemView.findViewById(R.id.editBtn);
         }
     }
+    public void getDetailsFromAPI(String location, final String api_key){
+        final ApiInterface apiInterface= ApiClient.getClient().create(ApiInterface.class);
+        Call<ResponseModel> call= apiInterface.getDetails(location,1,api_key);
+        call.enqueue(new Callback<ResponseModel>() {
+            @Override
+            public void onResponse(Call<ResponseModel> call, Response<ResponseModel> response) {
+                if(response.isSuccessful()){
+                    try{
 
+                    }
+                    catch (Exception e){
+
+                    }
+
+                }
+                else{
+                    Log.d("Else Response: " , response.message());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseModel> call, Throwable t) {
+                Log.d("Response: " , t.getMessage());
+            }
+        });
+    }
     private class PerformNetworkRequest extends AsyncTask<Void, Void, String> {
 
         //the url where we need to send the request
