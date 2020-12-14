@@ -11,6 +11,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.masterandroid.backgroundservice.adapter.MainAdapter;
 
 import org.json.JSONArray;
@@ -23,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class ViewHistoryRecycler extends AppCompatActivity {
+    private FirebaseAuth mAuth;
     private static final int CODE_GET_REQUEST = 1024;
     private static final int CODE_POST_REQUEST = 1025;
     RecyclerView historyRecycler;
@@ -31,6 +34,8 @@ public class ViewHistoryRecycler extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mAuth=FirebaseAuth.getInstance();
+        FirebaseUser currentUser= mAuth.getCurrentUser();
         setContentView(R.layout.activity_view_history_recycler);
         historyRecycler=findViewById(R.id.historyRecycler);
         historyRecycler.setLayoutManager(new LinearLayoutManager(this));
@@ -40,12 +45,12 @@ public class ViewHistoryRecycler extends AppCompatActivity {
         refresh_history.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                readHistory();
+                readHistory(currentUser.getUid());
             }
         });
     }
-    private void readHistory() {
-        PerformNetworkRequest request = new PerformNetworkRequest(Api.URL_READ_LIST, null, CODE_GET_REQUEST);
+    private void readHistory(String userId) {
+        PerformNetworkRequest request = new PerformNetworkRequest(Api.URL_READ_LIST+userId, null, CODE_GET_REQUEST);
         request.execute();
     }
 
@@ -74,11 +79,7 @@ public class ViewHistoryRecycler extends AppCompatActivity {
                     );
             Log.d("place",p.toString());
             historyList.add(p);
-
-
             //creating the adapter and setting it to the recyclerview
-
-
         }
 
         Log.d("List Size ",Integer.toString(historyList.size()));
