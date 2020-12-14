@@ -162,32 +162,7 @@ public class LocationService extends Service {
 
     }
 
-    public void getDetailsFromAPI(String location, final String api_key){
-        final ApiInterface apiInterface= ApiClient.getClient().create(ApiInterface.class);
-        Call<ResponseModel> call= apiInterface.getDetails(location,20,api_key);
-        call.enqueue(new Callback<ResponseModel>() {
-            @Override
-            public void onResponse(Call<ResponseModel> call, Response<ResponseModel> response) {
-                if(response.isSuccessful()){
-                    try{
 
-                    }
-                    catch (Exception e){
-
-                    }
-
-                }
-                else{
-                    Log.d("Else Response: " , response.message());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseModel> call, Throwable t) {
-                Log.d("Response: " , t.getMessage());
-            }
-        });
-    }
 
     public void getPlaceSearchDetails(double latitude, double longitude, String input, String inputtime, String fields,String location,String key){
         place_detailsArrayList=new ArrayList<>();
