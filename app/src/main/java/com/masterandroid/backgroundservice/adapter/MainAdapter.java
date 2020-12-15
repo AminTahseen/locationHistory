@@ -126,32 +126,6 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
             editBtn=itemView.findViewById(R.id.editBtn);
         }
     }
-    public void getDetailsFromAPI(String location, final String api_key){
-        final ApiInterface apiInterface= ApiClient.getClient().create(ApiInterface.class);
-        Call<ResponseModel> call= apiInterface.getDetails(location,1,api_key);
-        call.enqueue(new Callback<ResponseModel>() {
-            @Override
-            public void onResponse(Call<ResponseModel> call, Response<ResponseModel> response) {
-                if(response.isSuccessful()){
-                    try{
-
-                    }
-                    catch (Exception e){
-
-                    }
-
-                }
-                else{
-                    Log.d("Else Response: " , response.message());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseModel> call, Throwable t) {
-                Log.d("Response: " , t.getMessage());
-            }
-        });
-    }
     private class PerformNetworkRequest extends AsyncTask<Void, Void, String> {
 
         //the url where we need to send the request

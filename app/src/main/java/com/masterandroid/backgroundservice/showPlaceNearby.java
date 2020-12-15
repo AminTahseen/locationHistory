@@ -9,7 +9,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.google.android.gms.common.api.Result;
+import com.google.gson.JsonArray;
 import com.masterandroid.backgroundservice.adapter.nearbyAdapter;
+import com.masterandroid.backgroundservice.nearbyResponse.Example;
 import com.masterandroid.backgroundservice.retrofit.ApiClient;
 import com.masterandroid.backgroundservice.retrofit.ApiInterface;
 
@@ -40,35 +43,48 @@ public class showPlaceNearby extends AppCompatActivity {
         Toast.makeText(this, mainLatlng, Toast.LENGTH_SHORT).show();
         getDetailsFromAPI(mainLatlng,"AIzaSyDazjxsJFdohTwZllHdMsacB4P9luVjqyE");
 
-        //   nearbyAdapter adapter=new nearbyAdapter(nearbyPlaceList,showPlaceNearby.this);
-        //   nearbyRecycler.setAdapter(adapter);
+
     }
 
     public void getDetailsFromAPI(String location, final String api_key){
         final ApiInterface apiInterface= ApiClient.getClient().create(ApiInterface.class);
-        Call<ResponseModel> call= apiInterface.getDetails(location,20,api_key);
-        call.enqueue(new Callback<ResponseModel>() {
+        Call<Example> call= apiInterface.getDetails(location,20,api_key);
+        call.enqueue(new Callback<Example>() {
             @Override
-            public void onResponse(Call<ResponseModel> call, Response<ResponseModel> response) {
+            public void onResponse(Call<Example> call, Response<Example> response) {
                 if(response.isSuccessful()){
-                    try{
+                    try
+                    {
+                        for(int i=0;i<response.body().getResults().size();i++)
+                        {
+                            String placeName=response.body().getResults().get(i).getName();
+                            Double lat = response.body().getResults().get(i).getGeometry().getLocation().getLat();
+                            Double lng = response.body().getResults().get(i).getGeometry().getLocation().getLng();
+                            nearbyPlace nearby=new nearbyPlace(placeName,lat,lng);
+                            nearbyPlaceList.add(nearby);
 
-                        Log.d("showPLace success",response.body().toString());
+                        }
+                        nearbyAdapter adapter=new nearbyAdapter(nearbyPlaceList,showPlaceNearby.this);
+                        nearbyRecycler.setAdapter(adapter);
                     }
-                    catch (Exception e){
-                        Log.d("showPLace err ",e.getMessage());
+                    catch (Exception er)
+                    {
+                        Log.d("showPLace err ",er.getMessage());
 
                     }
+                    Log.d("showPLace success",response.body().toString());
 
                 }
-                else{
-                    Log.d("Else Response: " , response.message());
-                }
+                else
+                    {
+                        Log.d("Else Response: " , response.message());
+
+                    }
             }
 
             @Override
-            public void onFailure(Call<ResponseModel> call, Throwable t) {
-                Log.d("Response: " , t.getMessage());
+            public void onFailure(Call<Example> call, Throwable t) {
+
             }
         });
     }

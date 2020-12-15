@@ -1,5 +1,8 @@
 package com.masterandroid.backgroundservice;
 
+import android.location.Location;
+
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
