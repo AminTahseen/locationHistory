@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -18,8 +19,12 @@ import com.masterandroid.backgroundservice.nearbyResponse.Example;
 import com.masterandroid.backgroundservice.retrofit.ApiClient;
 import com.masterandroid.backgroundservice.retrofit.ApiInterface;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import retrofit2.Call;
@@ -33,6 +38,8 @@ public class showPlaceNearby extends AppCompatActivity {
     ApiClient retrofit;
     String place_addr;
     int placeId;
+    private static final int CODE_GET_REQUEST = 1024;
+    private static final int CODE_POST_REQUEST = 1025;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +54,7 @@ public class showPlaceNearby extends AppCompatActivity {
         Double place_longitude = getData.getDoubleExtra("placeLon",0.0);
         place_addr= getData.getStringExtra("placeAddr");
         placeId=getData.getIntExtra("placeId",0);
+
         String mainLatlng=place_longitude.toString()+","+place_latitude.toString();
         Toast.makeText(this, mainLatlng, Toast.LENGTH_SHORT).show();
         getDetailsFromAPI(mainLatlng,"AIzaSyDazjxsJFdohTwZllHdMsacB4P9luVjqyE");
@@ -54,8 +62,12 @@ public class showPlaceNearby extends AppCompatActivity {
         done_history.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-
+                Toast.makeText(showPlaceNearby.this, Integer.toString(placeId), Toast.LENGTH_SHORT).show();
+                PerformNetworkRequest request = new PerformNetworkRequest(Api.URL_DELETE_LIST + placeId, null, CODE_GET_REQUEST);
+                request.execute();
+                Intent goBack=new Intent(showPlaceNearby.this,ViewHistoryRecycler.class);
+                finish();
+                startActivity(goBack);
             }
         });
     }
@@ -102,5 +114,62 @@ public class showPlaceNearby extends AppCompatActivity {
 
             }
         });
+    }
+
+    private class PerformNetworkRequest extends AsyncTask<Void, Void, String> {
+
+        //the url where we need to send the request
+        String url;
+        //the parameters
+        HashMap<String, String> params;
+        //the request code to define whether it is a GET or POST
+        int requestCode;
+
+        //constructor to initialize values
+        PerformNetworkRequest(String url, HashMap<String, String> params, int requestCode) {
+            this.url = url;
+            this.params = params;
+            this.requestCode = requestCode;
+        }
+
+        //when the task started displaying a progressbar
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+
+        //this method will give the response from the request
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            try {
+                JSONObject object = new JSONObject(s);
+                if (!object.getBoolean("error")) {
+                    Toast.makeText(showPlaceNearby.this, object.getString("message"), Toast.LENGTH_SHORT).show();
+                    //refreshing the herolist after every operation
+                    //so we get an updated list
+                    //we will create this method right now it is commented
+                    //because we haven't created it yet
+                    // refreshHistoryList(object.getJSONArray("lists"));
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        //the network operation will be performed in background
+        @Override
+        protected String doInBackground(Void... voids) {
+            RequestHandler requestHandler = new RequestHandler();
+
+            if (requestCode == CODE_POST_REQUEST)
+                return requestHandler.sendPostRequest(url, params);
+
+            if (requestCode == CODE_GET_REQUEST)
+                return requestHandler.sendGetRequest(url);
+
+            return null;
+        }
     }
 }

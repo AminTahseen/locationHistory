@@ -145,13 +145,22 @@ public class MainActivity extends AppCompatActivity {
         if(!isLocationServiceRunning()){
             Intent intent= new Intent(getApplicationContext(),LocationService.class);
             intent.setAction(Constants.ACTION_START_LOCATION_SERVICE);
-            startService(intent);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+               startForegroundService(intent);
+               Log.d("Main","Foreground");
+            }
+            else
+                {
+                    startService(intent);
+                    Log.d("Main","Service..");
+                }
             Toast.makeText(this,"Started",Toast.LENGTH_SHORT).show();
         }
     }
 
     private void stopLocation(){
-        /*
+
         if(isLocationServiceRunning()){
 
             Intent intent= new Intent(getApplicationContext(),LocationService.class);
@@ -159,11 +168,11 @@ public class MainActivity extends AppCompatActivity {
             startService(intent);
             Toast.makeText(this,"Stopped",Toast.LENGTH_SHORT).show();
         }
-        */
+       /*
         Intent intent= new Intent(getApplicationContext(),LocationService.class);
         stopService(intent);
         Toast.makeText(this,"Stopped",Toast.LENGTH_SHORT).show();
-
+*/
     }
 
     /*

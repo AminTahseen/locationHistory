@@ -68,12 +68,13 @@ public class LocationService extends Service {
            countDownTimer.cancel();
         }
         // 60*30*1000 = 30 min
+        // 60*10*1000 = 10 min
         // 50000 = 50 seconds
         // 10000 = 10 seconds
         // 60000 = 60 seconds
 
         // Try Increasing countDownInterval
-        countDownTimer = new CountDownTimer( 10000, 1000) {
+        countDownTimer = new CountDownTimer( 60*10*1000, 1000) {
             public void onTick(long millisUntilFinished)
             {
                 String left=Long.toString(millisUntilFinished);
@@ -126,12 +127,6 @@ public class LocationService extends Service {
         stopSelf();
       countDownTimer.cancel();
 
-    }
-
-    @Override
-    public void onDestroy() {
-        stopLocation();
-        super.onDestroy();
     }
 
     public void storeDataInDatabase(place obj, double lat, double lng)
@@ -231,6 +226,7 @@ public class LocationService extends Service {
             if(action!=null){
                 if(action.equals(Constants.ACTION_START_LOCATION_SERVICE)){
                     startLocation();
+
                 }
                 else if(action.equals(Constants.ACTION_STOP_LOCATION_SERVICE)){
                     stopLocation();
