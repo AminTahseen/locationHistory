@@ -7,6 +7,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.android.gms.common.api.Result;
@@ -26,25 +28,36 @@ import retrofit2.Response;
 
 public class showPlaceNearby extends AppCompatActivity {
     RecyclerView nearbyRecycler;
+    Button done_history;
     List<nearbyPlace> nearbyPlaceList;
     ApiClient retrofit;
+    String place_addr;
+    int placeId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_place_nearby);
         nearbyPlaceList=new ArrayList<>();
         nearbyRecycler=findViewById(R.id.nearbyRecycler);
+        done_history=findViewById(R.id.done_history);
         nearbyRecycler.setLayoutManager(new LinearLayoutManager(this));
         Intent getData=getIntent();
 
         Double place_latitude = getData.getDoubleExtra("placeLat",0.0);
         Double place_longitude = getData.getDoubleExtra("placeLon",0.0);
-
+        place_addr= getData.getStringExtra("placeAddr");
+        placeId=getData.getIntExtra("placeId",0);
         String mainLatlng=place_longitude.toString()+","+place_latitude.toString();
         Toast.makeText(this, mainLatlng, Toast.LENGTH_SHORT).show();
         getDetailsFromAPI(mainLatlng,"AIzaSyDazjxsJFdohTwZllHdMsacB4P9luVjqyE");
 
+        done_history.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
+
+            }
+        });
     }
 
     public void getDetailsFromAPI(String location, final String api_key){
@@ -61,13 +74,13 @@ public class showPlaceNearby extends AppCompatActivity {
                             String placeName=response.body().getResults().get(i).getName();
                             Double lat = response.body().getResults().get(i).getGeometry().getLocation().getLat();
                             Double lng = response.body().getResults().get(i).getGeometry().getLocation().getLng();
-                         //   List<String> placeType=response.body().getResults().get(i).getTypes();
-                            nearbyPlace nearby=new nearbyPlace(placeName,lat,lng);
+                            List<String> placeType=response.body().getResults().get(i).getTypes();
+                            nearbyPlace nearby=new nearbyPlace(placeName,lat,lng,placeType,place_addr);
                             nearbyPlaceList.add(nearby);
-
+                            nearbyAdapter adapter=new nearbyAdapter(nearbyPlaceList,showPlaceNearby.this);
+                            nearbyRecycler.setAdapter(adapter);
                         }
-                        nearbyAdapter adapter=new nearbyAdapter(nearbyPlaceList,showPlaceNearby.this);
-                        nearbyRecycler.setAdapter(adapter);
+
                     }
                     catch (Exception er)
                     {

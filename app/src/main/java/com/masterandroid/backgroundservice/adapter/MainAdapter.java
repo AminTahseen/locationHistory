@@ -94,6 +94,8 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
                 Intent showNearby=new Intent(activity, showPlaceNearby.class);
                 showNearby.putExtra("placeLat",data.getPlaceLatitude());
                 showNearby.putExtra("placeLon",data.getPlaceLongitude());
+                showNearby.putExtra("placeAddr",data.getPlaceAddress());
+                showNearby.putExtra("placeId",data.getPlaceId());
                 activity.startActivity(showNearby);
             }
         });

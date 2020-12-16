@@ -51,7 +51,7 @@
                     android:layout_marginTop="1dp"
                     android:textSize="13dp"
                     android:layout_marginBottom="8dp"
-                    android:text="Latitude, Longitude"
+                    android:text="[Type 1, Type 2]"
                     android:textColor="#000" />
 
 
@@ -64,7 +64,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
-            android:weightSum="2">
+            android:weightSum="1">
 
             <Button
                 android:id="@+id/yesBtn"
@@ -73,16 +73,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="Yes"/>
-            <Button
-                android:id="@+id/noBtn"
-                android:background="#e74c3c"
-                android:textColor="#fff"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:visibility="visible"
-                android:text="No"/>
+                android:text="Visited"/>
+
         </LinearLayout>
 
     </LinearLayout>

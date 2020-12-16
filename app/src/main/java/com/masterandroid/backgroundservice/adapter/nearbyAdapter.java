@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.masterandroid.backgroundservice.Api;
+import com.masterandroid.backgroundservice.LocationService;
 import com.masterandroid.backgroundservice.R;
 import com.masterandroid.backgroundservice.RequestHandler;
 import com.masterandroid.backgroundservice.nearbyPlace;
@@ -46,7 +47,25 @@ public class nearbyAdapter  extends RecyclerView.Adapter<nearbyAdapter.ViewHolde
     public void onBindViewHolder(@NonNull nearbyAdapter.ViewHolder holder, int position) {
         nearbyPlace data=nearbyList.get(position);
         holder.name.setText(data.getPlaceName());
-        holder.latLng.setText(Double.toString(data.getPlaceLatitude())+","+Double.toString(data.getPlaceLongitude()));
+        holder.latLng.setText(data.getTypes().toString());
+
+        holder.yesBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(activity, "You have visited.", Toast.LENGTH_SHORT).show();
+                storeData(
+                        "GuzFS0EjtBSwuRXBuRfhFN8ZSfm1",
+                        data.getPlaceName(),
+                        data.getMainPlaceAddress(),
+                        data.getTypes().toString(),
+                        data.getPlaceLatitude(),
+                        data.getPlaceLongitude(),
+                        "yes"
+                );
+
+            }
+        });
+
     }
 
     @Override
@@ -55,23 +74,30 @@ public class nearbyAdapter  extends RecyclerView.Adapter<nearbyAdapter.ViewHolde
     }
     public class ViewHolder extends RecyclerView.ViewHolder  {
         TextView name,latLng;
-        Button yesBtn,noBtn;
+        Button yesBtn;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             name=itemView.findViewById(R.id.name);
             latLng=itemView.findViewById(R.id.latlng);
             yesBtn=itemView.findViewById(R.id.yesBtn);
-            noBtn=itemView.findViewById(R.id.noBtn);
         }
     }
-    private void updateStatus(String placeid,String status)
+    public void storeData(String UserId, String name, String address,String type,double latitude, double longitude, String VisitStatus)
     {
 
         HashMap<String, String> params = new HashMap<>();
-        params.put("placeId", placeid);
-        params.put("visitStatus", status);
-        PerformNetworkRequest request = new PerformNetworkRequest(Api.URL_UPDATE_LIST, params, CODE_POST_REQUEST);
+
+        params.put("userId",UserId);
+        params.put("placeLatitude",String.valueOf(latitude));
+        params.put("placeLongitude",String.valueOf(longitude));
+        params.put("placeAddress",address);
+        params.put("placeName",name);
+        params.put("placeType",type);
+        params.put("visitStatus",VisitStatus);
+
+        PerformNetworkRequest request = new PerformNetworkRequest(Api.URL_CREATE_LIST, params, CODE_POST_REQUEST);
         request.execute();
+
     }
     private class PerformNetworkRequest extends AsyncTask<Void, Void, String> {
 
