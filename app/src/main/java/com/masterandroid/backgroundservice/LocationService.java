@@ -157,7 +157,7 @@ public class LocationService extends Service {
 
     }
 
-
+//commit
 
     public void getPlaceSearchDetails(double latitude, double longitude, String input, String inputtime, String fields,String location,String key){
         place_detailsArrayList=new ArrayList<>();
