@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     static CountDownTimer countDownTimer = null;
     private FirebaseAuth mAuth;
 
-    Button start,stop,Logout,show;
+    Button start,stop,Logout,show,showVisted;
     TextView Details;
     final int REQUEST_CODE_LOCATION_PERMISSION=1;
     @Override
@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
         show= findViewById(R.id.show);
         Logout=findViewById(R.id.Logout);
         mAuth=FirebaseAuth.getInstance();
+        showVisted=findViewById(R.id.showVisted);
 
         Logout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -107,7 +108,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
+        showVisted.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent showVistedPlaces=new Intent(MainActivity.this,VisitedPlaces.class);
+                startActivity(showVistedPlaces);
+            }
+        });
     }
 
     @Override

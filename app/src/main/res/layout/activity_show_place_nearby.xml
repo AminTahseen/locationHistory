@@ -23,20 +23,14 @@
         tools:listitem="@layout/nearby_item"
         />
 
-    <RelativeLayout
-        android:id="@+id/footer"
+    <Button
+        android:id="@+id/done_history"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentBottom="true"
-        android:gravity="center">
-        <Button
-            android:id="@+id/done_history"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:background="@color/colorPrimaryDark"
-            android:textColor="#fff"
-            android:text="Done"/>
-    </RelativeLayout>
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="@color/colorPrimaryDark"
+        android:textColor="#fff"
+        android:text="Done"/>
+
 
 </LinearLayout>

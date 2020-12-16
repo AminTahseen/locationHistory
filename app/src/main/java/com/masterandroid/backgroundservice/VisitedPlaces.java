@@ -11,9 +11,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.masterandroid.backgroundservice.adapter.MainAdapter;
+import com.masterandroid.backgroundservice.adapter.VisitedAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -24,25 +23,23 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-public class ViewHistoryRecycler extends AppCompatActivity {
-    private FirebaseAuth mAuth;
+public class VisitedPlaces extends AppCompatActivity {
+
+    RecyclerView visitedRecycler;
     private static final int CODE_GET_REQUEST = 1024;
     private static final int CODE_POST_REQUEST = 1025;
-    RecyclerView historyRecycler;
-    Button refresh_history;
     List<place> historyList;
+    Button refresh_places;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mAuth=FirebaseAuth.getInstance();
-        FirebaseUser currentUser= mAuth.getCurrentUser();
-        setContentView(R.layout.activity_view_history_recycler);
-        historyRecycler=findViewById(R.id.historyRecycler);
-        historyRecycler.setLayoutManager(new LinearLayoutManager(this));
-        refresh_history=findViewById(R.id.refresh_history);
+        setContentView(R.layout.activity_visited_places);
+        visitedRecycler=findViewById(R.id.visitedRecycler);
+        visitedRecycler.setLayoutManager(new LinearLayoutManager(this));
         historyList=new ArrayList<>();
-
-        refresh_history.setOnClickListener(new View.OnClickListener() {
+        refresh_places=findViewById(R.id.get_places);
+        refresh_places.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 readHistory("GuzFS0EjtBSwuRXBuRfhFN8ZSfm1");
@@ -50,13 +47,12 @@ public class ViewHistoryRecycler extends AppCompatActivity {
         });
     }
     private void readHistory(String userId) {
-        PerformNetworkRequest request = new PerformNetworkRequest(Api.URL_READ_LIST+userId, null, CODE_GET_REQUEST);
+        PerformNetworkRequest request = new PerformNetworkRequest(Api.URL_READ_YES_LIST+userId, null, CODE_GET_REQUEST);
         request.execute();
     }
-
     private void refreshHistoryList(JSONArray heroes) throws JSONException {
         //clearing previous heroes
-          historyList.clear();
+        historyList.clear();
 
         //traversing through all the items in the json array
         //the json we got from the response
@@ -77,18 +73,17 @@ public class ViewHistoryRecycler extends AppCompatActivity {
                     obj.getString("placeName"),
                     placeType,
                     obj.getString("visitStatus")
-                    );
+            );
             Log.d("place",p.toString());
             //creating the adapter and setting it to the recyclerview
             historyList.add(p);
 
         }
         Log.d("List Size ",Integer.toString(historyList.size()));
-        MainAdapter adapter = new MainAdapter(historyList,ViewHistoryRecycler.this);
-        historyRecycler.setAdapter(adapter);
+        VisitedAdapter adapter = new VisitedAdapter(historyList,VisitedPlaces.this);
+        visitedRecycler.setAdapter(adapter);
+
     }
-
-
     private class PerformNetworkRequest extends AsyncTask<Void, Void, String> {
 
         //the url where we need to send the request
