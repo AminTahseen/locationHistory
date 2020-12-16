@@ -45,8 +45,7 @@ public class ViewHistoryRecycler extends AppCompatActivity {
         refresh_history.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                historyList.clear();
-                readHistory("GuzFS0EjtBSwuRXBuRfhFN8ZSfm1");
+                readHistory(currentUser.getUid());
             }
         });
     }
@@ -61,7 +60,6 @@ public class ViewHistoryRecycler extends AppCompatActivity {
 
         //traversing through all the items in the json array
         //the json we got from the response
-
         for (int i = 0; i < heroes.length(); i++) {
             //getting each hero object
             JSONObject obj = heroes.getJSONObject(i);
@@ -81,8 +79,13 @@ public class ViewHistoryRecycler extends AppCompatActivity {
                     obj.getString("visitStatus")
                     );
             Log.d("place",p.toString());
-            historyList.add(p);
+            if(historyList.contains(p.getPlaceName()))
+            {
 
+            }else
+                {
+                    historyList.add(p);
+                }
             //creating the adapter and setting it to the recyclerview
         }
 
