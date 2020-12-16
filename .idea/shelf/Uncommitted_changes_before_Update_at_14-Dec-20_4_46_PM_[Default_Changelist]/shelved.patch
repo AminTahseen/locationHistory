@@ -1,0 +1,18 @@
+Index: app/src/main/java/com/masterandroid/backgroundservice/Api.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.masterandroid.backgroundservice;\r\n\r\npublic class Api {\r\n    private static final String ROOT_URL = \"http://10.33.32.83/LocationHistory/v1/Api.php?apicall=\";\r\n    public static final String URL_CREATE_LIST = ROOT_URL + \"createHistory\";\r\n    public static final String URL_READ_LIST = ROOT_URL + \"getHistory\";\r\n    public static final String URL_UPDATE_LIST = ROOT_URL + \"updateList\";\r\n    public static final String URL_DELETE_LIST = ROOT_URL + \"deleteList&userId=\";\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/masterandroid/backgroundservice/Api.java	(revision cc57f0e91e95375d3d402802cc2e442bab454711)
++++ app/src/main/java/com/masterandroid/backgroundservice/Api.java	(date 1607930311499)
+@@ -3,7 +3,7 @@
+ public class Api {
+     private static final String ROOT_URL = "http://10.33.32.83/LocationHistory/v1/Api.php?apicall=";
+     public static final String URL_CREATE_LIST = ROOT_URL + "createHistory";
+-    public static final String URL_READ_LIST = ROOT_URL + "getHistory";
++    public static final String URL_READ_LIST = ROOT_URL + "getHistory&userId=";
+     public static final String URL_UPDATE_LIST = ROOT_URL + "updateList";
+     public static final String URL_DELETE_LIST = ROOT_URL + "deleteList&userId=";
+ }
