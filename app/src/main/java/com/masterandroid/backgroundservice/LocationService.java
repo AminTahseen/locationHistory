@@ -180,7 +180,7 @@ public class LocationService extends Service {
                        // FirebaseAuth mAuth=FirebaseAuth.getInstance();
                      //   currentUser = mAuth.getCurrentUser();
 
-                        storeData("demoid",name,address,type,latitude,longitude,"pending");
+                        storeData("GuzFS0EjtBSwuRXBuRfhFN8ZSfm1",name,address,type,latitude,longitude,"pending");
 
                     }
                 }
@@ -210,7 +210,7 @@ public class LocationService extends Service {
             String postalCode = addresses.get(0).getPostalCode();
             String knownName = addresses.get(0).getFeatureName();
 
-            completeDetails= new place("hello",Latitude,Longitude,address,"pending");
+            completeDetails= new place("GuzFS0EjtBSwuRXBuRfhFN8ZSfm1",Latitude,Longitude,address,"pending");
             Log.d("LOCATION_DETAILS",Latitude+", "+Longitude+", "+knownName+", "+address);
 
         } catch (IOException e) {
