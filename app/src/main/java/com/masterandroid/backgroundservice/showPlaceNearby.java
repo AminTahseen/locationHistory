@@ -17,6 +17,7 @@ import com.masterandroid.backgroundservice.retrofit.ApiClient;
 import com.masterandroid.backgroundservice.retrofit.ApiInterface;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import retrofit2.Call;
@@ -60,6 +61,7 @@ public class showPlaceNearby extends AppCompatActivity {
                             String placeName=response.body().getResults().get(i).getName();
                             Double lat = response.body().getResults().get(i).getGeometry().getLocation().getLat();
                             Double lng = response.body().getResults().get(i).getGeometry().getLocation().getLng();
+                         //   List<String> placeType=response.body().getResults().get(i).getTypes();
                             nearbyPlace nearby=new nearbyPlace(placeName,lat,lng);
                             nearbyPlaceList.add(nearby);
 

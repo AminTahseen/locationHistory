@@ -34,8 +34,8 @@ public class ViewHistoryRecycler extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mAuth=FirebaseAuth.getInstance();
-        FirebaseUser currentUser= mAuth.getCurrentUser();
+       // mAuth=FirebaseAuth.getInstance();
+      //  FirebaseUser currentUser= mAuth.getCurrentUser();
         setContentView(R.layout.activity_view_history_recycler);
         historyRecycler=findViewById(R.id.historyRecycler);
         historyRecycler.setLayoutManager(new LinearLayoutManager(this));
@@ -45,7 +45,8 @@ public class ViewHistoryRecycler extends AppCompatActivity {
         refresh_history.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                readHistory(currentUser.getUid());
+                //currentUser.getUid()
+                readHistory("GuzFS0EjtBSwuRXBuRfhFN8ZSfm1");
             }
         });
     }
@@ -79,13 +80,8 @@ public class ViewHistoryRecycler extends AppCompatActivity {
                     obj.getString("visitStatus")
                     );
             Log.d("place",p.toString());
-            if(historyList.contains(p.getPlaceName()))
-            {
+            historyList.add(p);
 
-            }else
-                {
-                    historyList.add(p);
-                }
             //creating the adapter and setting it to the recyclerview
         }
 
