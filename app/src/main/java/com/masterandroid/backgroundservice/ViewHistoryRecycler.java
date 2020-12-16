@@ -79,7 +79,13 @@ public class ViewHistoryRecycler extends AppCompatActivity {
                     obj.getString("visitStatus")
                     );
             Log.d("place",p.toString());
-            historyList.add(p);
+            if(historyList.contains(p.getPlaceName()))
+            {
+
+            }else
+                {
+                    historyList.add(p);
+                }
             //creating the adapter and setting it to the recyclerview
         }
 

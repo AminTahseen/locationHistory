@@ -182,10 +182,10 @@ public class LocationService extends Service {
                        // Log.d("API Success",place_detailsArrayList.get(i).getPlaceName());
                         String type= place_detailsArrayList.get(i).getPlaceType().toString();
                         Log.d("Full Details ",name+' '+address+' '+type);
-                        FirebaseAuth mAuth=FirebaseAuth.getInstance();
-                        currentUser = mAuth.getCurrentUser();
+                       // FirebaseAuth mAuth=FirebaseAuth.getInstance();
+                     //   currentUser = mAuth.getCurrentUser();
 
-                        storeData(currentUser.getUid(),name,address,type,latitude,longitude,"pending");
+                        storeData("demoid",name,address,type,latitude,longitude,"pending");
 
                     }
                 }
