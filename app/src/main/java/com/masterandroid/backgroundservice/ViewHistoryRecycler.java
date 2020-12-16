@@ -45,7 +45,7 @@ public class ViewHistoryRecycler extends AppCompatActivity {
         refresh_history.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                readHistory(currentUser.getUid());
+                readHistory("GuzFS0EjtBSwuRXBuRfhFN8ZSfm1");
             }
         });
     }
