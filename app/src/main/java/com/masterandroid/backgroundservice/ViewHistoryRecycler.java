@@ -65,6 +65,7 @@ public class ViewHistoryRecycler extends AppCompatActivity {
             JSONObject obj = heroes.getJSONObject(i);
 
             //adding the hero to the list
+            // push
             String type= obj.getString("placeType");
             String str[] = type.split(",");
             ArrayList<String> placeType = new ArrayList<String>(Arrays.asList(str));

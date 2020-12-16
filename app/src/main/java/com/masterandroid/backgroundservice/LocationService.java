@@ -74,7 +74,7 @@ public class LocationService extends Service {
         // 60000 = 60 seconds
 
         // Try Increasing countDownInterval
-        countDownTimer = new CountDownTimer( 60*10*1000, 1000) {
+        countDownTimer = new CountDownTimer( 20000, 1000) {
             public void onTick(long millisUntilFinished)
             {
                 String left=Long.toString(millisUntilFinished);
@@ -92,7 +92,7 @@ public class LocationService extends Service {
 
                  */
                 locationRequest.setInterval(5000);
-                locationRequest.setFastestInterval(100*400);
+                locationRequest.setFastestInterval(100*100);
                 locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
                 if (ActivityCompat.checkSelfPermission(LocationService.this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -156,8 +156,6 @@ public class LocationService extends Service {
         request.execute();
 
     }
-
-//commit
 
     public void getPlaceSearchDetails(double latitude, double longitude, String input, String inputtime, String fields,String location,String key){
         place_detailsArrayList=new ArrayList<>();
