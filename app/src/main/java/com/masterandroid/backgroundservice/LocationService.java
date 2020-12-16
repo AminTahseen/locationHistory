@@ -240,7 +240,7 @@ public class LocationService extends Service {
 
         //the url where we need to send the request
         String url;
-
+        // comment
         //the parameters
         HashMap<String, String> params;
 
