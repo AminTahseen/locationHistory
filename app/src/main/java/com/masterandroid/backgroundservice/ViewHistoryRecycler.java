@@ -56,7 +56,7 @@ public class ViewHistoryRecycler extends AppCompatActivity {
 
     private void refreshHistoryList(JSONArray heroes) throws JSONException {
         //clearing previous heroes
-          historyList.clear();
+       // historyList.clear();
 
         //traversing through all the items in the json array
         //the json we got from the response
@@ -79,10 +79,16 @@ public class ViewHistoryRecycler extends AppCompatActivity {
                     obj.getString("visitStatus")
                     );
             Log.d("place",p.toString());
-            //creating the adapter and setting it to the recyclerview
-            historyList.add(p);
+            if(historyList.contains(p.getPlaceName()))
+            {
 
+            }else
+                {
+                    historyList.add(p);
+                }
+            //creating the adapter and setting it to the recyclerview
         }
+
         Log.d("List Size ",Integer.toString(historyList.size()));
         MainAdapter adapter = new MainAdapter(historyList,ViewHistoryRecycler.this);
         historyRecycler.setAdapter(adapter);
