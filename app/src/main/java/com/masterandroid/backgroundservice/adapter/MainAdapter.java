@@ -73,6 +73,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
               //  Toast.makeText(activity, "Yes for "+data.getPlaceName(), Toast.LENGTH_SHORT).show();
                 Toast.makeText(activity, "place id "+data.getPlaceId(), Toast.LENGTH_SHORT).show();
                 updateStatus(Integer.toString(data.getPlaceId()),"Yes");
+                notifyDataSetChanged();
             }
         });
 
@@ -82,6 +83,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
                 Toast.makeText(activity, "No for "+data.getPlaceName(), Toast.LENGTH_SHORT).show();
                 holder.editBtn.setVisibility(View.VISIBLE);
                 holder.noBtn.setVisibility(View.GONE);
+                notifyDataSetChanged();
             }
         });
 
