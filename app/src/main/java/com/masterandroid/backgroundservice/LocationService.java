@@ -25,7 +25,11 @@ import com.masterandroid.backgroundservice.retrofit.ApiInterface;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -45,14 +49,30 @@ public class LocationService extends Service {
         @Override
         public void onLocationResult(LocationResult locationResult) {
             super.onLocationResult(locationResult);
-            if (locationResult != null && locationResult.getLastLocation() != null) {
-                double longitude =  locationResult.getLastLocation().getLongitude();
-                double latitude = locationResult.getLastLocation().getLatitude();
-                Log.d ("LOCATION_UPDATE",latitude+","+longitude);
-                details= getGeocodingDetails(longitude,latitude);
-               // getDetailsFromAPI(latitude+","+longitude,"AIzaSyDazjxsJFdohTwZllHdMsacB4P9luVjqyE");
-                storeDataInDatabase(details,latitude,longitude);
+
+            try
+            {
+                if (locationResult != null && locationResult.getLastLocation() != null) {
+                    double longitude =  locationResult.getLastLocation().getLongitude();
+                    double latitude = locationResult.getLastLocation().getLatitude();
+                    Log.d ("LOCATION_UPDATE",latitude+","+longitude);
+                    details= getGeocodingDetails(longitude,latitude);
+                    // getDetailsFromAPI(latitude+","+longitude,"AIzaSyDazjxsJFdohTwZllHdMsacB4P9luVjqyE");
+                    if(details.getPlaceAddress()!=null)
+                    {
+                        Toast.makeText(LocationService.this, "Address found", Toast.LENGTH_SHORT).show();
+                        storeDataInDatabase(details,latitude,longitude);
+
+                    }else
+                    {
+                        Toast.makeText(LocationService.this, "Address not found", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }catch (Exception er)
+            {
+                Log.d("onLocationResult",er.getMessage());
             }
+
         }
     };
 
@@ -74,7 +94,7 @@ public class LocationService extends Service {
         // 60000 = 60 seconds
 
         // Try Increasing countDownInterval
-        countDownTimer = new CountDownTimer( 20000, 1000) {
+        countDownTimer = new CountDownTimer( 60000, 1000) {
             public void onTick(long millisUntilFinished)
             {
                 String left=Long.toString(millisUntilFinished);
@@ -92,7 +112,7 @@ public class LocationService extends Service {
 
                  */
                 locationRequest.setInterval(5000);
-                locationRequest.setFastestInterval(100*100);
+                locationRequest.setFastestInterval(100*300);
                 locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
                 if (ActivityCompat.checkSelfPermission(LocationService.this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -112,6 +132,7 @@ public class LocationService extends Service {
             }
             public void onFinish()
             {
+                Toast.makeText(LocationService.this, "Service Has Ended...", Toast.LENGTH_SHORT).show();
                 Log.d("done!", "done!");
                 stopLocation();
             }
@@ -139,7 +160,7 @@ public class LocationService extends Service {
 
 
     }
-    public void storeData(String UserId, String name, String address,String type,double latitude, double longitude, String VisitStatus)
+    public void storeData(String UserId, String name, String address,String type,double latitude, double longitude, String VisitStatus,String placeTime)
     {
 
         HashMap<String, String> params = new HashMap<>();
@@ -151,6 +172,7 @@ public class LocationService extends Service {
         params.put("placeName",name);
         params.put("placeType",type);
         params.put("visitStatus",VisitStatus);
+        params.put("placeTime",placeTime);
 
         PerformNetworkRequest request = new PerformNetworkRequest(Api.URL_CREATE_LIST, params, CODE_POST_REQUEST);
         request.execute();
@@ -177,8 +199,10 @@ public class LocationService extends Service {
                         Log.d("Full Details ",name+' '+address+' '+type);
                        // FirebaseAuth mAuth=FirebaseAuth.getInstance();
                      //   currentUser = mAuth.getCurrentUser();
-
-                        storeData("GuzFS0EjtBSwuRXBuRfhFN8ZSfm1",name,address,type,latitude,longitude,"pending");
+                        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+                        Date date = new Date();
+                        String time=formatter.format(date).toString();
+                        storeData("GuzFS0EjtBSwuRXBuRfhFN8ZSfm1",name,address,type,latitude,longitude,"pending",time);
 
                     }
                 }
@@ -208,8 +232,12 @@ public class LocationService extends Service {
             String postalCode = addresses.get(0).getPostalCode();
             String knownName = addresses.get(0).getFeatureName();
 
-            completeDetails= new place("GuzFS0EjtBSwuRXBuRfhFN8ZSfm1",Latitude,Longitude,address,"pending");
-            Log.d("LOCATION_DETAILS",Latitude+", "+Longitude+", "+knownName+", "+address);
+            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+            Date date = new Date();
+            String time=formatter.format(date).toString();
+
+            completeDetails= new place("GuzFS0EjtBSwuRXBuRfhFN8ZSfm1",Latitude,Longitude,address,"pending",time);
+            Log.d("LOCATION_DETAILS",completeDetails.toString());
 
         } catch (IOException e) {
             e.printStackTrace();

@@ -27,8 +27,11 @@ public class place {
     @SerializedName("visitStatus")
     private String status;
 
+    @SerializedName("placeTime")
+    private String placeTime;
+
     public place(int placeId, String userId, double placeLatitude, double placeLongitude, String placeAddress, String placeName,
-                 ArrayList<String> placeType, String visitStatus) {
+                 ArrayList<String> placeType, String visitStatus,String placeTime) {
         this.placeId=placeId;
         this.placeLatitude = placeLatitude;
         this.placeLongitude = placeLongitude;
@@ -37,14 +40,16 @@ public class place {
         this.placeType = placeType;
         this.userId=userId;
         this.status=visitStatus;
+        this.placeTime=placeTime;
     }
 
-    public place(String userId, double placeLatitude, double placeLongitude, String placeAddress,String visitStatus) {
+    public place(String userId, double placeLatitude, double placeLongitude, String placeAddress,String visitStatus,String placeTime) {
         this.userId=userId;
         this.placeLatitude = placeLatitude;
         this.placeLongitude = placeLongitude;
         this.placeAddress = placeAddress;
         this.status=visitStatus;
+        this.placeTime=placeTime;
     }
 
     public place() { }
@@ -101,15 +106,21 @@ public class place {
 
     public void setPlaceId(int placeId) { this.placeId = placeId; }
 
+    public String getPlaceTime() { return placeTime; }
+
+    public void setPlaceTime(String placeTime) { this.placeTime = placeTime; }
+
     @Override
     public String toString() {
         return "place{" +
-                "placeLatitude=" + placeLatitude +
+                ", userId='" + userId + '\'' +
+                ", placeLatitude=" + placeLatitude +
                 ", placeLongitude=" + placeLongitude +
                 ", placeAddress='" + placeAddress + '\'' +
                 ", placeName='" + placeName + '\'' +
                 ", placeType=" + placeType +
+                ", status='" + status + '\'' +
+                ", placeTime='" + placeTime + '\'' +
                 '}';
     }
-
 }

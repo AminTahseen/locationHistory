@@ -15,24 +15,20 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.masterandroid.backgroundservice.Api;
-import com.masterandroid.backgroundservice.LocationService;
 import com.masterandroid.backgroundservice.R;
 import com.masterandroid.backgroundservice.RequestHandler;
-import com.masterandroid.backgroundservice.ResponseModel;
 import com.masterandroid.backgroundservice.place;
-import com.masterandroid.backgroundservice.retrofit.ApiClient;
-import com.masterandroid.backgroundservice.retrofit.ApiInterface;
+
 import com.masterandroid.backgroundservice.showPlaceNearby;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
 
@@ -59,6 +55,13 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
         place data=historyList.get(position);
         holder.name.setText(data.getPlaceName());
         holder.address.setText(data.getPlaceAddress());
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss ");
+        try {
+            Date d = sdf.parse(data.getPlaceTime());
+            holder.time.setText(d.toString());
+        } catch (ParseException ex) {
+            Log.v("Exception", ex.getLocalizedMessage());
+        }
         if(data.getPlaceType()==null)
         {
 
@@ -117,13 +120,14 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder  {
-        TextView name,address,type;
+        TextView name,address,type,time;
         Button yesBtn,noBtn,editBtn;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             name=itemView.findViewById(R.id.name);
             address=itemView.findViewById(R.id.address);
             type=itemView.findViewById(R.id.type);
+            time=itemView.findViewById(R.id.time);
             yesBtn=itemView.findViewById(R.id.yesBtn);
             noBtn=itemView.findViewById(R.id.noBtn);
             editBtn=itemView.findViewById(R.id.editBtn);

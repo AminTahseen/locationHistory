@@ -77,7 +77,8 @@ public class ViewHistoryRecycler extends AppCompatActivity {
                     obj.getString("placeAddress"),
                     obj.getString("placeName"),
                     placeType,
-                    obj.getString("visitStatus")
+                    obj.getString("visitStatus"),
+                    obj.getString("placeTime")
                     );
             Log.d("place",p.toString());
             if(historyList.contains(p.getPlaceName()))
@@ -93,6 +94,7 @@ public class ViewHistoryRecycler extends AppCompatActivity {
         Log.d("List Size ",Integer.toString(historyList.size()));
         MainAdapter adapter = new MainAdapter(historyList,ViewHistoryRecycler.this);
         historyRecycler.setAdapter(adapter);
+
     }
 
 

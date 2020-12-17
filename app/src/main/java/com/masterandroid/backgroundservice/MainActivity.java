@@ -162,7 +162,7 @@ public class MainActivity extends AppCompatActivity {
                     startService(intent);
                     Log.d("Main","Service..");
                 }
-            Toast.makeText(this,"Started",Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,"Service Has Started...",Toast.LENGTH_SHORT).show();
         }
     }
 

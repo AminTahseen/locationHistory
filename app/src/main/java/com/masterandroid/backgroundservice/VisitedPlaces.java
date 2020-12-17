@@ -72,7 +72,8 @@ public class VisitedPlaces extends AppCompatActivity {
                     obj.getString("placeAddress"),
                     obj.getString("placeName"),
                     placeType,
-                    obj.getString("visitStatus")
+                    obj.getString("visitStatus"),
+                    obj.getString("placeTime")
             );
             Log.d("place",p.toString());
             //creating the adapter and setting it to the recyclerview

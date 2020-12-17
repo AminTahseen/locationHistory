@@ -3,6 +3,7 @@ package com.masterandroid.backgroundservice.adapter;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,9 @@ import com.masterandroid.backgroundservice.showPlaceNearby;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -50,6 +54,13 @@ public class VisitedAdapter extends RecyclerView.Adapter<VisitedAdapter.ViewHold
         place data=historyList.get(position);
         holder.name.setText(data.getPlaceName());
         holder.address.setText(data.getPlaceAddress());
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss ");
+        try {
+            Date d = sdf.parse(data.getPlaceTime());
+            holder.time.setText(d.toString());
+        } catch (ParseException ex) {
+            Log.v("Exception", ex.getLocalizedMessage());
+        }
         if(data.getPlaceType()==null)
         {
 
@@ -65,12 +76,13 @@ public class VisitedAdapter extends RecyclerView.Adapter<VisitedAdapter.ViewHold
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder  {
-        TextView name,address,type;
+        TextView name,address,type,time;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             name=itemView.findViewById(R.id.name);
             address=itemView.findViewById(R.id.address);
             type=itemView.findViewById(R.id.type);
+            time=itemView.findViewById(R.id.time);
         }
     }
 
