@@ -73,9 +73,9 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
         holder.yesBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(activity, "Yes for "+data.getPlaceName(), Toast.LENGTH_SHORT).show();
+              //  Toast.makeText(activity, "Yes for "+data.getPlaceName(), Toast.LENGTH_SHORT).show();
                 Toast.makeText(activity, "place id "+data.getPlaceId(), Toast.LENGTH_SHORT).show();
-                updateStatus(Integer.toString(data.getPlaceId()),"yes");
+                updateStatus(Integer.toString(data.getPlaceId()),"Yes");
               //  notifyDataSetChanged();
             }
         });

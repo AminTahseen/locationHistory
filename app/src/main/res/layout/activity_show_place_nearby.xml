@@ -16,12 +16,6 @@
         android:textStyle="bold"
         android:textAlignment="center"
         android:textSize="20dp"/>
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/nearbyRecycler"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:listitem="@layout/nearby_item"
-        />
 
     <Button
         android:id="@+id/done_history"
@@ -31,6 +25,14 @@
         android:background="@color/colorPrimaryDark"
         android:textColor="#fff"
         android:text="Done"/>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/nearbyRecycler"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:listitem="@layout/nearby_item"
+        />
+
+
 
 
 </LinearLayout>
