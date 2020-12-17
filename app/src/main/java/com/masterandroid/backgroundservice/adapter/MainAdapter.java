@@ -75,7 +75,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
             public void onClick(View view) {
                 Toast.makeText(activity, "Yes for "+data.getPlaceName(), Toast.LENGTH_SHORT).show();
                 Toast.makeText(activity, "place id "+data.getPlaceId(), Toast.LENGTH_SHORT).show();
-                updateStatus(Integer.toString(data.getPlaceId()),"Yes");
+                updateStatus(Integer.toString(data.getPlaceId()),"yes");
               //  notifyDataSetChanged();
             }
         });
