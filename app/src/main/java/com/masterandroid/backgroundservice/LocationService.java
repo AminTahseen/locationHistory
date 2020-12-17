@@ -183,7 +183,7 @@ public class LocationService extends Service {
                     }
                 }
                 else{
-
+         // commit
                 }
             }
             @Override
