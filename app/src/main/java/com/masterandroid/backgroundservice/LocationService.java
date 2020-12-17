@@ -112,7 +112,7 @@ public class LocationService extends Service {
 
                  */
                 locationRequest.setInterval(5000);
-                locationRequest.setFastestInterval(100*300);
+                locationRequest.setFastestInterval(100*100);
                 locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
                 if (ActivityCompat.checkSelfPermission(LocationService.this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -132,7 +132,7 @@ public class LocationService extends Service {
             }
             public void onFinish()
             {
-                Toast.makeText(LocationService.this, "Service Has Ended...", Toast.LENGTH_SHORT).show();
+                Toast.makeText(LocationService.this, "Service Has Ended..", Toast.LENGTH_SHORT).show();
                 Log.d("done!", "done!");
                 stopLocation();
             }
