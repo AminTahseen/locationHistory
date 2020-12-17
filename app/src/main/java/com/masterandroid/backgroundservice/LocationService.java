@@ -154,12 +154,16 @@ public class LocationService extends Service {
         params.put("placeType",type);
         params.put("visitStatus",VisitStatus);
 
+        Toast.makeText(this, "Inside storeData", Toast.LENGTH_SHORT).show();
         PerformNetworkRequest request = new PerformNetworkRequest(Api.URL_CREATE_LIST, params, CODE_POST_REQUEST);
         request.execute();
+        Toast.makeText(this, "Inside storeData Executed", Toast.LENGTH_SHORT).show();
 
     }
 
     public void getPlaceSearchDetails(double latitude, double longitude, String input, String inputtime, String fields,String location,String key){
+        Toast.makeText(this, "Inside getPlaceSearchDetails", Toast.LENGTH_SHORT).show();
+
         place_detailsArrayList=new ArrayList<>();
         final ApiInterface apiInterface= ApiClient.getClient().create(ApiInterface.class);
         Call <ResponseModel> call=apiInterface.getPlaceSearch(input,inputtime,fields,location,key);
@@ -168,6 +172,8 @@ public class LocationService extends Service {
             public void onResponse(Call<ResponseModel> call, Response<ResponseModel> response) {
                 if(response.isSuccessful())
                 {
+                    Toast.makeText(getApplicationContext(), "getPlaceSearchDetails Success", Toast.LENGTH_SHORT).show();
+
                     //place myPlace= new place();
                     place_detailsArrayList=response.body().getCandidates();
                     for(int i=0;i<place_detailsArrayList.size();i++)
@@ -185,7 +191,9 @@ public class LocationService extends Service {
                     }
                 }
                 else{
-         // commit
+                    Toast.makeText(getApplicationContext(), "getPlaceSearchDetails Failed", Toast.LENGTH_SHORT).show();
+
+                    // commit
                 }
             }
             @Override
