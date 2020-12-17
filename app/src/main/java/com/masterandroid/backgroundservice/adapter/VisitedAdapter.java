@@ -54,7 +54,7 @@ public class VisitedAdapter extends RecyclerView.Adapter<VisitedAdapter.ViewHold
         place data=historyList.get(position);
         holder.name.setText(data.getPlaceName());
         holder.address.setText(data.getPlaceAddress());
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss ");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss a");
         try {
             Date d = sdf.parse(data.getPlaceTime());
             holder.time.setText(d.toString());
