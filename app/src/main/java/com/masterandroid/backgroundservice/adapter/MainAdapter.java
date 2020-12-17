@@ -55,8 +55,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
         place data=historyList.get(position);
         holder.name.setText(data.getPlaceName());
         holder.address.setText(data.getPlaceAddress());
-        holder.time.setText(data.getPlaceTime());
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss ");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         try {
             Date d = sdf.parse(data.getPlaceTime());
             holder.time.setText(d.toString());
@@ -74,9 +73,9 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
         holder.yesBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-              //  Toast.makeText(activity, "Yes for "+data.getPlaceName(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity, "Yes for "+data.getPlaceName(), Toast.LENGTH_SHORT).show();
                 Toast.makeText(activity, "place id "+data.getPlaceId(), Toast.LENGTH_SHORT).show();
-             //   updateStatus(Integer.toString(data.getPlaceId()),"Yes");
+                updateStatus(Integer.toString(data.getPlaceId()),"Yes");
               //  notifyDataSetChanged();
             }
         });
