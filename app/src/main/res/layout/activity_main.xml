@@ -54,9 +54,6 @@
             android:text="Stop Service"/>
     </LinearLayout>
 
-
-
-
     <Button
         android:background="#e74c3c"
         android:textColor="#fff"
