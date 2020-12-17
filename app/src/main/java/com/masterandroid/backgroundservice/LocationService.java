@@ -26,8 +26,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -94,7 +92,7 @@ public class LocationService extends Service {
         // 60000 = 60 seconds
 
         // Try Increasing countDownInterval
-        countDownTimer = new CountDownTimer( 60000, 1000) {
+        countDownTimer = new CountDownTimer( 60*10*1000 , 1000) {
             public void onTick(long millisUntilFinished)
             {
                 String left=Long.toString(millisUntilFinished);
@@ -112,7 +110,7 @@ public class LocationService extends Service {
 
                  */
                 locationRequest.setInterval(5000);
-                locationRequest.setFastestInterval(100*100);
+                locationRequest.setFastestInterval(100*600);
                 locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
                 if (ActivityCompat.checkSelfPermission(LocationService.this, Manifest.permission.ACCESS_FINE_LOCATION)

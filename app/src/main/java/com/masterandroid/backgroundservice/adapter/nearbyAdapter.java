@@ -21,6 +21,8 @@ import com.masterandroid.backgroundservice.nearbyPlace;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -53,6 +55,9 @@ public class nearbyAdapter  extends RecyclerView.Adapter<nearbyAdapter.ViewHolde
             @Override
             public void onClick(View view) {
                 Toast.makeText(activity, "You have visited.", Toast.LENGTH_SHORT).show();
+                SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+                Date date = new Date();
+                String time=formatter.format(date).toString();
                 storeData(
                         "GuzFS0EjtBSwuRXBuRfhFN8ZSfm1",
                         data.getPlaceName(),
@@ -60,7 +65,8 @@ public class nearbyAdapter  extends RecyclerView.Adapter<nearbyAdapter.ViewHolde
                         data.getTypes().toString(),
                         data.getPlaceLatitude(),
                         data.getPlaceLongitude(),
-                        "yes"
+                        "yes",
+                        time
                 );
 
             }
@@ -82,7 +88,9 @@ public class nearbyAdapter  extends RecyclerView.Adapter<nearbyAdapter.ViewHolde
             yesBtn=itemView.findViewById(R.id.yesBtn);
         }
     }
-    public void storeData(String UserId, String name, String address,String type,double latitude, double longitude, String VisitStatus)
+    public void storeData(String UserId, String name, String address,String type,
+                          double latitude, double longitude, String VisitStatus,String time
+    )
     {
 
         HashMap<String, String> params = new HashMap<>();
@@ -94,6 +102,7 @@ public class nearbyAdapter  extends RecyclerView.Adapter<nearbyAdapter.ViewHolde
         params.put("placeName",name);
         params.put("placeType",type);
         params.put("visitStatus",VisitStatus);
+        params.put("placeTime",time);
 
         PerformNetworkRequest request = new PerformNetworkRequest(Api.URL_CREATE_LIST, params, CODE_POST_REQUEST);
         request.execute();
